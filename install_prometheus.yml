@@ -1,0 +1,6 @@
+---
+- name: Prometheus role
+  hosts: prometheus_hosts
+  roles:
+    - role: prometheus
+...

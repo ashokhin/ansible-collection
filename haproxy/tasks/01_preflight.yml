@@ -1,0 +1,22 @@
+---
+- name: Inherit default vars
+  ansible.builtin.set_fact:
+    haproxy_config: "{{ haproxy_config_default | ansible.builtin.combine(haproxy_config, recursive=true) }}"
+  # Do not reveal sensitive information in output
+  no_log: "{{ not ansible_check_mode }}"
+
+- name: "Create system group {{ haproxy_group }}"
+  ansible.builtin.group:
+    name: "{{ haproxy_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ haproxy_user }}"
+  ansible.builtin.user:
+    name: "{{ haproxy_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ haproxy_group }}"
+    home: "/var/lib/{{ haproxy_user }}"
+    create_home: true
+...

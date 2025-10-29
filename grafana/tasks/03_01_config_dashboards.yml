@@ -1,0 +1,30 @@
+---
+- name: Create/Update dashboards file (provisioning)
+  ansible.builtin.template:
+    src: dashboards_provisioning.yml.j2
+    dest: "{{ grafana_provisioning_dir }}/dashboards/ansible.yml"
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_files_permissions }}"
+  notify:
+    - "restart grafana"
+
+- name: Create provisioning directory for Grafana dashboards
+  ansible.builtin.file:
+    path: "{{ grafana_config.paths.data }}/dashboards"
+    state: directory
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_directories_permissions }}"
+
+- name: Provision Grafana dashboards
+  ansible.posix.synchronize:
+    src: files/dashboards/
+    dest: "{{ grafana_config.paths.data }}/dashboards"
+    archive: false
+    recursive: true
+    times: true
+    checksum: true
+  notify:
+    - "update dashboards permissions"
+...

@@ -1,0 +1,54 @@
+---
+# handlers file for grafana
+- name: Stop Grafana
+  ansible.builtin.systemd_service:
+    name: "{{ grafana_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: stopped
+  listen:
+    - "restart grafana"
+    - "stop grafana"
+
+- name: Start Grafana
+  ansible.builtin.systemd_service:
+    name: "{{ grafana_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: started
+  listen:
+    - "restart grafana"
+    - "start grafana"
+
+- name: "Waiting for start Grafana on {{ '{}:{}'.format(grafana_config.server.http_addr, grafana_config.server.http_port) }}"
+  ansible.builtin.wait_for:
+    host: "{{ grafana_config.server.http_addr }}"
+    port: "{{ grafana_config.server.http_port }}"
+    delay: 5
+    timeout: 60
+  listen:
+    - "restart grafana"
+    - "start grafana"
+
+- name: Search dashboards
+  ansible.builtin.find:
+    paths: "{{ grafana_config.paths.data }}/dashboards"
+    file_type: file
+    patterns: "*.json"
+  register: _grafana_find_output
+  listen:
+    - "update dashboards permissions"
+
+- name: Update dashboards permissions
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: file
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_files_permissions }}"
+  loop: "{{ _grafana_find_output.files }}"
+  listen:
+    - "update dashboards permissions"
+...

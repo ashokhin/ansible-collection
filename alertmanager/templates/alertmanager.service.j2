@@ -1,0 +1,36 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Alertmanager {% if alertmanager_cluster_listen_address | length > 0 %}Cluster{% else %}Server{% endif %}
+
+Documentation=https://prometheus.io/docs/alerting/latest/alertmanager/
+After=network-online.target
+
+[Service]
+User={{ alertmanager_user }}
+Group={{ alertmanager_group }}
+Restart=on-failure
+ExecStart={{ alertmanager_releases_path }}/current/alertmanager \
+  --storage.path={{ alertmanager_data_path }} \
+  --data.retention={{ alertmanager_data_retention }} \
+{% if alertmanager_web_external_url | length > 0 %}
+  --web.external-url="{{ alertmanager_web_external_url }}" \
+{% endif %}
+  --cluster.listen-address="{{ alertmanager_cluster_listen_address }}" \
+  --web.listen-address="{{ alertmanager_web_listen_address }}" \
+  --config.file={{ alertmanager_conf_path }}/alertmanager.yml
+ExecReload=/bin/kill -HUP $MAINPID
+
+CapabilityBoundingSet=CAP_SET_UID
+LimitNOFILE=65000
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

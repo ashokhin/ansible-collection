@@ -1,0 +1,10 @@
+---
+# vars file for grafana
+_grafana_dependencies:
+  - apt-transport-https
+  - adduser
+  - ca-certificates
+  - libfontconfig1
+  - gnupg2
+  - musl
+...

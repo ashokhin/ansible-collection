@@ -1,0 +1,6 @@
+---
+- name: HAProxy role
+  hosts: haproxy_hosts
+  roles:
+    - role: haproxy
+...

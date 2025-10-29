@@ -1,0 +1,6 @@
+---
+# vars file for alertmanager
+alertmanager_archive_name: "alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz"
+alertmanager_download_url: "{{ alertmanager_download_base_url }}/v{{ alertmanager_version }}/{{ alertmanager_archive_name }}"
+alertmanager_release_path: "{{ alertmanager_releases_path }}/v{{ alertmanager_version }}"
+...

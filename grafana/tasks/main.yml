@@ -1,0 +1,11 @@
+---
+# tasks file for grafana
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install Grafana
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration Grafana
+  ansible.builtin.import_tasks: 03_config.yml
+...

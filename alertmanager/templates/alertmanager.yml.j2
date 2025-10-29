@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+
+route:
+  {{ alertmanager_route | to_nice_yaml(indent=2) | indent(2, False) }}
+
+templates:
+  - '{{ alertmanager_message_templates_path }}/*'
+{% if alertmanager_receivers | length %}
+
+receivers:
+{% for receiver in alertmanager_receivers %}
+{% if receiver.type == "telegram" %}
+  - name: '{{ receiver.name }}'
+    telegram_configs:
+      - bot_token: '{{ receiver.bot_token }}'
+        chat_id: {{ receiver.chat_id }}
+        message: '{{ receiver.message }}'
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if alertmanager_inhibit_rules | length %}
+
+inhibit_rules:
+{{ alertmanager_inhibit_rules | to_nice_yaml(indent=2) }}
+{% endif %}

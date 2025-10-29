@@ -1,0 +1,7 @@
+---
+- name: Install HAProxy
+  ansible.builtin.package:
+    name: "{{ haproxy_package }}"
+    state: "{{ (haproxy_version == 'latest') | ternary('latest', 'present') }}"
+  notify: "restart haproxy"
+...

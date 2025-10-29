@@ -1,0 +1,6 @@
+---
+- name: Alertmanager role
+  hosts: alertmanager_hosts
+  roles:
+    - role: alertmanager
+...

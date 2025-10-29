@@ -1,0 +1,6 @@
+---
+- name: Grafana role
+  hosts: grafana_hosts
+  roles:
+    - role: grafana
+...

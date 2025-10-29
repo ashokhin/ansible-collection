@@ -1,0 +1,13 @@
+---
+- name: Create HAProxy config
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: "{{ haproxy_conf_path }}"
+    owner: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+    mode: "{{ haproxy_files_permissions }}"
+  # Do not reveal sensitive information in output
+  no_log: "{{ not ansible_check_mode }}"
+  notify:
+    - "restart haproxy"
+...

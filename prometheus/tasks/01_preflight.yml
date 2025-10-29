@@ -1,0 +1,45 @@
+---
+- name: "Create system group {{ prometheus_group }}"
+  ansible.builtin.group:
+    name: "{{ prometheus_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ prometheus_user }}"
+  ansible.builtin.user:
+    name: "{{ prometheus_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ prometheus_group }}"
+    home: "/home/{{ prometheus_user }}"
+    create_home: true
+
+- name: Create Prometheus folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_group }}"
+    mode: "{{ prometheus_directories_permissions }}"
+  loop:
+    - "{{ prometheus_base_path }}"
+    - "{{ prometheus_releases_path }}"
+    - "{{ prometheus_conf_path }}"
+    - "{{ prometheus_data_path }}"
+    - "{{ prometheus_alert_rules_path }}"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ prometheus_releases_path }}/current"
+  register: _prometheus_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _prometheus_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _prometheus_stat_symlink.stat.exists | default(false) | bool) or
+      (_prometheus_stat_symlink.stat.lnk_target | default("") != prometheus_release_path)
+  notify:
+    - "update symlink"
+...

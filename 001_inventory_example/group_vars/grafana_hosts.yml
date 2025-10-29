@@ -1,0 +1,12 @@
+---
+# Non-default variables for Grafana hosts
+# Example: override Grafana configuration to set external URL
+grafana_config:
+  paths:
+    temp_data_lifetime: 24h
+  server:
+    http_addr: "127.0.0.1"
+    http_port: "{{ grafana_web_listen_port }}"
+    root_url: "https://mymonitoring.example.com:443/grafana/"
+    serve_from_sub_path: true
+...

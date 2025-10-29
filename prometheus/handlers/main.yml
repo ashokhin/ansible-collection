@@ -1,0 +1,49 @@
+---
+# handlers file for prometheus
+- name: Stop Prometheus
+  ansible.builtin.systemd_service:
+    name: "{{ prometheus_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: stopped
+  listen:
+    - "restart prometheus"
+    - "update symlink"
+
+- name: Update symlink
+  ansible.builtin.file:
+    src: "{{ prometheus_release_path }}"
+    path: "{{ prometheus_releases_path }}/current"
+    state: link
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_group }}"
+  listen:
+    - "update symlink"
+
+- name: Start Prometheus
+  ansible.builtin.systemd_service:
+    name: "{{ prometheus_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: started
+  listen:
+    - "restart prometheus"
+    - "update symlink"
+
+- name: "Waiting for start Prometheus on {{ prometheus_web_listen_address }}"
+  ansible.builtin.wait_for:
+    port: "{{ prometheus_web_listen_port }}"
+    timeout: 60
+  listen:
+    - "restart prometheus"
+    - "update symlink"
+
+- name: Reload Prometheus
+  ansible.builtin.systemd_service:
+    name: "{{ prometheus_service_name }}"
+    state: reloaded
+  listen:
+    - "reload prometheus"
+...

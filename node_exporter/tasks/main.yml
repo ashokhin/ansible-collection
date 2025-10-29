@@ -1,0 +1,20 @@
+---
+# tasks file for node_exporter
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install Node Exporter
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration Node Exporter
+  ansible.builtin.import_tasks: 03_config.yml
+
+- name: Delete temporary directory
+  ansible.builtin.file:
+    path: "{{ _node_exporter_tempdir.path }}"
+    state: absent
+  failed_when: false
+  changed_when: false
+  tags:
+    - always
+...

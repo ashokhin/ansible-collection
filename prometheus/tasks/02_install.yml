@@ -1,0 +1,73 @@
+---
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: prometheus
+  register: _prometheus_tempdir
+  check_mode: false
+  changed_when: false
+
+- name: "Create release folder for v{{ prometheus_version }}"
+  ansible.builtin.file:
+    path: "{{ prometheus_release_path }}"
+    state: directory
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_group }}"
+    mode: "{{ prometheus_directories_permissions }}"
+  check_mode: false
+  notify:
+    - "update symlink"
+
+- name: "Download Prometheus v{{ prometheus_version }}"
+  ansible.builtin.get_url:
+    url: "{{ prometheus_download_url }}"
+    dest: "{{ _prometheus_tempdir.path }}/{{ prometheus_archive_name }}"
+    checksum: "{{ prometheus_archive_checksum }}"
+    mode: "{{ prometheus_files_permissions }}"
+  check_mode: false
+  changed_when: false
+
+- name: "Unarchive Prometheus into '{{ prometheus_release_path }}'"
+  ansible.builtin.unarchive:
+    src: "{{ _prometheus_tempdir.path }}/{{ prometheus_archive_name }}"
+    dest: "{{ prometheus_release_path }}"
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_group }}"
+    include:
+      - "*/prometheus"
+      - "*/promtool"
+    extra_opts:
+      - "--strip-components=1"
+      - "--show-stored-names"
+      - "--wildcards"
+    remote_src: true
+  check_mode: false
+  notify:
+    - "update symlink"
+
+- name: Install Prometheus systemd service
+  ansible.builtin.template:
+    src: prometheus.service.j2
+    dest: "/etc/systemd/system/{{ prometheus_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "restart prometheus"
+
+- name: Get list of release directories
+  ansible.builtin.find:
+    paths:
+      - "{{ prometheus_releases_path }}"
+    file_type: "directory"
+    depth: 1
+  register: _prometheus_find_releases
+
+- name: Sort release directories
+  ansible.builtin.set_fact:
+    _prometheus_releases_path: "{{ _prometheus_find_releases.files | sort(attribute='path') | map(attribute='path') }}"
+
+- name: "Delete old release directories, keep last releases: {{ prometheus_keep_last_versions_number }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _prometheus_releases_path[:-prometheus_keep_last_versions_number] }}"
+...

@@ -1,0 +1,11 @@
+---
+# tasks file for haproxy
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install HAProxy
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration HAProxy
+  ansible.builtin.import_tasks: 03_config.yml
+...

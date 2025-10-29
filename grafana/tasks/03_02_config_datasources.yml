@@ -1,0 +1,13 @@
+---
+- name: Create/Update datasources file (provisioning)
+  ansible.builtin.template:
+    src: datasources_provisioning.yml.j2
+    dest: "{{ grafana_provisioning_dir }}/datasources/ansible.yml"
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_files_permissions }}"
+  # Do not reveal passwords for datasources in output
+  no_log: "{{ not ansible_check_mode }}"
+  notify:
+    - "restart grafana"
+...

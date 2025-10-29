@@ -1,0 +1,5 @@
+---
+# Non-default variables for Alertmanager hosts
+# Example: override Alertmanager configuration to set external URL
+alertmanager_web_external_url: "https://mymonitoring.example.com/alertmanager/"
+...

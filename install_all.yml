@@ -1,0 +1,26 @@
+---
+- name: Alertmanager role
+  hosts: alertmanager_hosts
+  roles:
+    - role: alertmanager
+
+- name: Prometheus role
+  hosts: prometheus_hosts
+  roles:
+    - role: prometheus
+
+- name: Node Exporter role
+  hosts: node_exporter_hosts
+  roles:
+    - role: node_exporter
+
+- name: Grafana role
+  hosts: grafana_hosts
+  roles:
+    - role: grafana
+
+- name: HAProxy role
+  hosts: haproxy_hosts
+  roles:
+    - role: haproxy
+...

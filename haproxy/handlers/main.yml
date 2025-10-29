@@ -1,0 +1,22 @@
+---
+# handlers file for haproxy
+- name: Stop HAProxy
+  ansible.builtin.systemd_service:
+    name: "{{ haproxy_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: stopped
+  listen:
+    - "restart haproxy"
+
+- name: Start HAProxy
+  ansible.builtin.systemd_service:
+    name: "{{ haproxy_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: started
+  listen:
+    - "restart haproxy"
+...

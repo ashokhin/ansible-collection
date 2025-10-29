@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+apiVersion: 1
+
+providers:
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    folderUid: ''
+    type: file
+    updateIntervalSeconds: 10
+    options:
+      path: {{ grafana_config.paths.data }}/dashboards

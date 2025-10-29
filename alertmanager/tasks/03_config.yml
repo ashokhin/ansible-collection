@@ -1,0 +1,21 @@
+---
+- name: Create Alertmanager config
+  ansible.builtin.template:
+    src: alertmanager.yml.j2
+    dest: "{{ alertmanager_conf_path }}/alertmanager.yml"
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    mode: "{{ alertmanager_files_permissions }}"
+  notify:
+    - "restart alertmanager"
+
+- name: Create Alertmanager message templates
+  ansible.builtin.copy:
+    src: files/message_templates/
+    dest: "{{ alertmanager_message_templates_path }}/"
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    mode: "{{ alertmanager_files_permissions }}"
+  notify:
+    - "reload alertmanager"
+...

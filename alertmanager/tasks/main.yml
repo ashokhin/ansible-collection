@@ -1,0 +1,21 @@
+---
+# tasks file for alertmanager
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_prepare_os.yml
+
+- name: Install Alertmanager
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration Alertmanager
+  ansible.builtin.import_tasks: 03_config.yml
+
+- name: Delete temporary directory
+  ansible.builtin.file:
+    path: "{{ _alertmanager_tempdir.path }}"
+    state: absent
+  failed_when: false
+  changed_when: false
+  ignore_errors: "{{ ansible_check_mode }}"
+  tags:
+    - always
+...

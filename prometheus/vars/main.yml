@@ -1,0 +1,6 @@
+---
+# vars file for prometheus
+prometheus_archive_name: "prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+prometheus_download_url: "{{ prometheus_download_base_url }}/v{{ prometheus_version }}/{{ prometheus_archive_name }}"
+prometheus_release_path: "{{ prometheus_releases_path }}/v{{ prometheus_version }}"
+...

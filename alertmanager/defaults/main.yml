@@ -1,0 +1,46 @@
+---
+# defaults file for alertmanager
+alertmanager_download_base_url: "https://github.com/prometheus/alertmanager/releases/download"
+alertmanager_version: "0.28.1"
+alertmanager_archive_checksum: "sha256:5ac7ab5e4b8ee5ce4d8fb0988f9cb275efcc3f181b4b408179fafee121693311"
+alertmanager_service_name: "alertmanager"
+alertmanager_user: "prometheus"
+alertmanager_group: "prometheus"
+alertmanager_files_permissions: "0644"
+alertmanager_directories_permissions: "0755"
+alertmanager_base_path: "/opt/alertmanager"
+alertmanager_releases_path: "{{ alertmanager_base_path }}/releases"
+alertmanager_conf_path: "{{ alertmanager_base_path }}/conf"
+alertmanager_data_path: "{{ alertmanager_base_path }}/data"
+alertmanager_message_templates_path: "{{ alertmanager_conf_path }}/message_templates"
+alertmanager_data_retention: "365d"
+alertmanager_web_listen_port: "9093"
+alertmanager_web_listen_address: "0.0.0.0:{{ alertmanager_web_listen_port }}"
+alertmanager_web_external_url: ""
+alertmanager_cluster_listen_address: ""
+
+alertmanager_config:
+  route:
+    group_by: ['alertname']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 1h
+    receiver: 'web.hook'
+  receivers:
+    - name: 'web.hook'
+      webhook_configs:
+        - url: 'http://127.0.0.1:5001/'
+  inhibit_rules:
+    - source_match:
+        severity: 'critical'
+      target_match:
+        severity: 'warning'
+      equal: ['alertname', 'dev', 'instance']
+
+alertmanager_route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'web.hook'
+...

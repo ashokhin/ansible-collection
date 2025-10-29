@@ -1,0 +1,45 @@
+---
+- name: "Create system group {{ alertmanager_group }}"
+  ansible.builtin.group:
+    name: "{{ alertmanager_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ alertmanager_user }}"
+  ansible.builtin.user:
+    name: "{{ alertmanager_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ alertmanager_group }}"
+    home: "/home/{{ alertmanager_user }}"
+    create_home: true
+
+- name: Create Alertmanager folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    mode: "{{ alertmanager_directories_permissions }}"
+  loop:
+    - "{{ alertmanager_base_path }}"
+    - "{{ alertmanager_releases_path }}"
+    - "{{ alertmanager_conf_path }}"
+    - "{{ alertmanager_data_path }}"
+    - "{{ alertmanager_message_templates_path }}"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ alertmanager_releases_path }}/current"
+  register: _alertmanager_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _alertmanager_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _alertmanager_stat_symlink.stat.exists | default(false) | bool) or
+      (_alertmanager_stat_symlink.stat.lnk_target | default("") != alertmanager_release_path)
+  notify:
+    - "update symlink"
+...

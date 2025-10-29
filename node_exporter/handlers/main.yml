@@ -1,0 +1,41 @@
+---
+# handlers file for node_exporter
+- name: Stop Node Exporter
+  ansible.builtin.systemd_service:
+    name: "{{ node_exporter_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: stopped
+  listen:
+    - "restart node_exporter"
+    - "update symlink"
+
+- name: Update symlink
+  ansible.builtin.file:
+    src: "{{ node_exporter_release_path }}"
+    path: "{{ node_exporter_releases_path }}/current"
+    state: link
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+  listen:
+    - "update symlink"
+
+- name: Start Node Exporter
+  ansible.builtin.systemd_service:
+    name: "{{ node_exporter_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: started
+  listen:
+    - "restart node_exporter"
+    - "update symlink"
+
+- name: "Waiting for start Node Exporter on {{ node_exporter_web_listen_address }}"
+  ansible.builtin.wait_for:
+    port: "{{ node_exporter_web_listen_port }}"
+    timeout: 60
+  listen:
+    - "restart node_exporter"
+...

@@ -1,0 +1,99 @@
+---
+# defaults file for grafana
+grafana_apt_gpg_key_url: "https://apt.grafana.com/gpg.key"
+grafana_apt_repo_url: "https://apt.grafana.com"
+grafana_package: "grafana-enterprise"
+grafana_version: "latest"
+grafana_apt_gpg_key_path: "/etc/apt/keyrings/grafana.asc"
+grafana_apt_repo_suite: "stable"
+grafana_apt_repo_component: "main"
+grafana_service_name: "grafana-server"
+grafana_user: "grafana"
+grafana_group: "grafana"
+grafana_files_permissions: "0644"
+grafana_directories_permissions: "0755"
+grafana_conf_path: "/etc/grafana/grafana.ini"
+grafana_provisioning_dir: "/etc/grafana/provisioning"
+
+grafana_datasources: {}
+
+grafana_config_default:
+  app_mode: "production"
+  instance_name: "${HOSTNAME}"
+
+  paths:
+    logs: "/var/log/grafana"
+    data: "/var/lib/grafana"
+
+  server:
+    http_addr: "0.0.0.0"
+    http_port: 3000
+    # External Grafana address. Variable maps to "root_url" in grafana server section
+    # root_url: "http://{{ grafana_config.server.http_addr }}:{{ grafana_config.server.http_port }}"
+    domain: "{{ ansible_facts['fqdn'] | default(ansible_host) | default('localhost') }}"
+
+    # Additional options for grafana "server" section
+    protocol: http
+    enforce_domain: false
+    socket: ""
+    cert_key: ""
+    cert_file: ""
+    enable_gzip: false
+    static_root_path: public
+    router_logging: false
+    serve_from_sub_path: false
+
+  # Variables correspond to ones in grafana.ini configuration file
+  # Security
+  security:
+    admin_user: admin
+    admin_password: ""
+    # secret_key: ""
+    # login_remember_days: 7
+    # cookie_username: grafana_user
+    # cookie_remember_name: grafana_remember
+    # disable_gravatar: true
+    # data_source_proxy_whitelist:
+
+  # Database setup
+  database:
+    type: sqlite3
+    # host: 127.0.0.1:3306
+    # name: grafana
+    # user: root
+    # password: ""
+    # url: ""
+    # ssl_mode: disable
+    # path: grafana.db
+    # max_idle_conn: 2
+    # max_open_conn: ""
+    # log_queries: ""
+
+  # User management and registration
+  users:
+    allow_sign_up: false
+    # allow_org_create: true
+    # auto_assign_org: true
+    auto_assign_org_role: Viewer
+    # login_hint: "email or username"
+    default_theme: dark
+    # external_manage_link_url: ""
+    # external_manage_link_name: ""
+    # external_manage_info: ""
+
+  # grafana authentication mechanisms
+  auth: {}
+  #  disable_login_form: false
+  #  oauth_auto_login: false
+  #  disable_signout_menu: false
+  #  signout_redirect_url: ""
+  #  anonymous:
+  #    org_name: "Main Organization"
+  #    org_role: Viewer
+  #  ldap:
+  #    config_file: "/etc/grafana/ldap.toml"
+  #    allow_sign_up: false
+  #  basic:
+  #    enabled: true
+
+...

@@ -1,0 +1,14 @@
+[alertmanager_hosts]
+192.168.1.2
+
+[prometheus_hosts]
+192.168.1.2
+
+[node_exporter_hosts]
+192.168.1.2
+
+[grafana_hosts]
+192.168.1.2
+
+[haproxy_hosts]
+192.168.1.2

@@ -1,0 +1,22 @@
+---
+- name: Inherit default vars
+  ansible.builtin.set_fact:
+    grafana_config: "{{ grafana_config_default | ansible.builtin.combine(grafana_config, recursive=true) }}"
+  # Do not reveal sensitive information in output
+  no_log: "{{ not ansible_check_mode }}"
+
+- name: "Create system group {{ grafana_group }}"
+  ansible.builtin.group:
+    name: "{{ grafana_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ grafana_user }}"
+  ansible.builtin.user:
+    name: "{{ grafana_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ grafana_group }}"
+    home: "/home/{{ grafana_user }}"
+    create_home: true
+...

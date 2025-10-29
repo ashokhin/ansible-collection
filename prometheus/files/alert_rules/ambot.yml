@@ -1,0 +1,36 @@
+#
+# Please do not change this file directly since it is managed by Ansible and will be overwritten.
+#
+groups:
+  - name: AirlineManagerBot
+    rules:
+      - alert: Ready to train
+        # Condition for alerting
+        expr: am4_company_training_points >= 2
+        # Delay before firing the alert
+        for: 1m
+        # Annotation - additional informational labels to store more information
+        annotations:
+          title: 'Airline has {{ $value }} training points.'
+          description: 'We are ready to train new skill.'
+        # Labels - additional labels to be attached to the alert
+        labels:
+          severity: 'info'
+
+      - alert: Ready to buy
+        expr: am4_company_money{type="Airline account"} >= 3000000000
+        for: 1h
+        annotations:
+          title: 'Airline account has more than $3B.'
+          description: 'We are ready to buy new aircraft.'
+        labels:
+          severity: 'info'
+
+      - alert: Ready to assign
+        expr: am4_ac_status{type="wo_route"} > 0
+        for: 3h
+        annotations:
+          title: 'Airline has {{ $value }} aircraft w/o route.'
+          description: 'Aircraft is ready to assign on a route.'
+        labels:
+          severity: 'info'

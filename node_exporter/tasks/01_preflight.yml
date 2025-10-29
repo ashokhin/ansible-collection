@@ -1,0 +1,42 @@
+---
+- name: "Create system group {{ node_exporter_group }}"
+  ansible.builtin.group:
+    name: "{{ node_exporter_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ node_exporter_user }}"
+  ansible.builtin.user:
+    name: "{{ node_exporter_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ node_exporter_group }}"
+    home: "/home/{{ node_exporter_user }}"
+    create_home: true
+
+- name: Create Node Exporter folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_group }}"
+    mode: "{{ node_exporter_directories_permissions }}"
+  loop:
+    - "{{ node_exporter_base_path }}"
+    - "{{ node_exporter_releases_path }}"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ node_exporter_releases_path }}/current"
+  register: _node_exporter_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _node_exporter_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _node_exporter_stat_symlink.stat.exists | default(false) | bool) or
+      (_node_exporter_stat_symlink.stat.lnk_target | default("") != node_exporter_release_path)
+  notify:
+    - "update symlink"
+...

@@ -1,0 +1,54 @@
+---
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: alertmanager
+  register: _alertmanager_tempdir
+  check_mode: false
+  changed_when: false
+
+- name: "Create release folder for v{{ alertmanager_version }}"
+  ansible.builtin.file:
+    path: "{{ alertmanager_release_path }}"
+    state: directory
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    mode: "{{ alertmanager_directories_permissions }}"
+  notify:
+    - "update symlink"
+
+- name: "Download Alertmanager v{{ alertmanager_version }}"
+  ansible.builtin.get_url:
+    url: "{{ alertmanager_download_url }}"
+    dest: "{{ _alertmanager_tempdir.path }}/{{ alertmanager_archive_name }}"
+    checksum: "{{ alertmanager_archive_checksum }}"
+    mode: "{{ alertmanager_files_permissions }}"
+  check_mode: false
+  changed_when: false
+
+- name: "Unarchive Alertmanager into '{{ alertmanager_release_path }}'"
+  ansible.builtin.unarchive:
+    src: "{{ _alertmanager_tempdir.path }}/{{ alertmanager_archive_name }}"
+    dest: "{{ alertmanager_release_path }}"
+    owner: "{{ alertmanager_user }}"
+    group: "{{ alertmanager_group }}"
+    include:
+      - "*/alertmanager"
+      - "*/amtool"
+    extra_opts:
+      - "--strip-components=1"
+      - "--show-stored-names"
+      - "--wildcards"
+    remote_src: true
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+    - "update symlink"
+
+- name: Install Alertmanager systemd service
+  ansible.builtin.template:
+    src: alertmanager.service.j2
+    dest: "/etc/systemd/system/{{ alertmanager_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "restart alertmanager"
+...

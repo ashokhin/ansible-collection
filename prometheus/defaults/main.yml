@@ -1,0 +1,37 @@
+---
+# defaults file for prometheus
+prometheus_download_base_url: "https://github.com/prometheus/prometheus/releases/download"
+prometheus_version: "3.5.0"
+prometheus_archive_checksum: "sha256:e811827af26d822afb09a4f28314f61b618b12cff5369835a67f674d8b46f39a"
+prometheus_keep_last_versions_number: 3
+prometheus_service_name: "prometheus"
+prometheus_user: "prometheus"
+prometheus_group: "prometheus"
+prometheus_files_permissions: "0644"
+prometheus_directories_permissions: "0755"
+prometheus_base_path: "/opt/prometheus"
+prometheus_releases_path: "{{ prometheus_base_path }}/releases"
+prometheus_conf_path: "{{ prometheus_base_path }}/conf"
+prometheus_data_path: "{{ prometheus_base_path }}/data"
+prometheus_alert_rules_path: "{{ prometheus_conf_path }}/alert_rules"
+prometheus_tsdb_retention_time: "365d"
+prometheus_web_listen_port: "9090"
+prometheus_web_listen_address: "0.0.0.0:{{ prometheus_web_listen_port }}"
+prometheus_web_external_url: ""
+
+prometheus_config:
+  global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+  alerting:
+    alertmanagers:
+      - static_configs:
+          - targets:
+  rule_files:
+  scrape_configs:
+    - job_name: "prometheus"
+      static_configs:
+        - targets: ["localhost:9090"]
+          labels:
+            app: "prometheus"
+...

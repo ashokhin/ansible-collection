@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+global
+{{ haproxy_config.global.params | indent(width=8, first=True) }}
+
+defaults
+{{ haproxy_config.defaults.params | indent(width=8, first=True) }}
+
+{% for userlist in haproxy_config.userlists %}
+userlist {{ userlist.name }}
+{{ userlist.params | indent(width=8, first=True) }}
+{% endfor %}
+
+{%- for frontend in haproxy_config.frontends %}
+frontend {{ frontend.name }}
+{{ frontend.params | indent(width=8, first=True) }}
+{% endfor %}
+
+{%- for backend in haproxy_config.backends %}
+backend {{ backend.name }}
+{{ backend.params | indent(width=8, first=True) }}
+{% endfor %}

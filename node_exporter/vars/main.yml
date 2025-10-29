@@ -1,0 +1,6 @@
+---
+# vars file for node_exporter
+node_exporter_archive_name: "node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+node_exporter_download_url: "{{ node_exporter_download_base_url }}/v{{ node_exporter_version }}/{{ node_exporter_archive_name }}"
+node_exporter_release_path: "{{ node_exporter_releases_path }}/v{{ node_exporter_version }}"
+...

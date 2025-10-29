@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network-online.target
+
+[Service]
+User={{ prometheus_user }}
+Group={{ prometheus_group }}
+Restart=on-failure
+ExecStart={{ prometheus_releases_path }}/current/prometheus \
+  --storage.tsdb.path={{ prometheus_data_path }} \
+  --storage.tsdb.retention.time={{ prometheus_tsdb_retention_time }} \
+{% if prometheus_web_external_url | length > 0 %}
+  --web.external-url="{{ prometheus_web_external_url }}" \
+{% endif %}
+  --web.listen-address="{{ prometheus_web_listen_address }}" \
+  --config.file={{ prometheus_conf_path }}/prometheus.yml
+ExecReload=/bin/kill -HUP $MAINPID
+
+CapabilityBoundingSet=CAP_SET_UID
+LimitNOFILE=65000
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

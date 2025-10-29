@@ -1,0 +1,19 @@
+---
+# defaults file for node_exporter
+node_exporter_download_base_url: "https://github.com/prometheus/node_exporter/releases/download"
+node_exporter_version: "1.9.1"
+node_exporter_archive_checksum: "sha256:becb950ee80daa8ae7331d77966d94a611af79ad0d3307380907e0ec08f5b4e8"
+node_exporter_service_name: "node-exporter"
+node_exporter_user: "prom-exporter"
+node_exporter_group: "prom-exporter"
+node_exporter_files_permissions: "0644"
+node_exporter_directories_permissions: "0755"
+node_exporter_base_path: "/opt/node_exporter"
+node_exporter_releases_path: "{{ node_exporter_base_path }}/releases"
+node_exporter_conf_path: "{{ node_exporter_base_path }}/conf"
+node_exporter_data_path: "{{ node_exporter_base_path }}/data"
+node_exporter_alert_rules_path: "{{ node_exporter_conf_path }}/alert_rules"
+node_exporter_web_listen_port: "9100"
+node_exporter_web_listen_address: "0.0.0.0:{{ node_exporter_web_listen_port }}"
+node_exporter_web_external_url: ""
+...
