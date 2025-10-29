@@ -26,8 +26,11 @@ Lightweight Ansible Collection providing reusable roles for installation and con
 ## Usage
 
 Add the inventory files. Example present in [001_inventory_example/](/001_inventory_example/) directory.
+
 Add hosts to relevant groups in the inventory file [001_inventory_example/hosts](/001_inventory_example/hosts).
+
 Run the playbook to apply the roles.
+
 For example, for the Prometheus installation run:
 ```bash
 ansible-playbook -i 001_inventory_example install_prometheus.yml
