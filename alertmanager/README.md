@@ -6,7 +6,7 @@
 
 ## Description
 
-Deploy and manage Prometheus [alertmanager](https://github.com/prometheus/alertmanager) service using ansible.
+Deploy and manage Prometheus [alertmanager](https://github.com/prometheus/alertmanager) Alertmanager for Prometheus using Ansible.
 
 
 ## Requirements
@@ -94,5 +94,8 @@ ansible-playbook -i 001_inventory_example install_alertmanager.yml
 
 
 ## License
+MIT License — see [LICENSE](LICENSE) file.
 
-MIT
+
+## Maintainer
+GitHub: [@ashokhin](https://github.com/ashokhin)

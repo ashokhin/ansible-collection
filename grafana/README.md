@@ -6,7 +6,7 @@
 
 ## Description
 
-Deploy [Grafana](https://github.com/grafana/grafana) monitoring system using ansible.
+Deploy [Grafana](https://github.com/grafana/grafana) dashboarding system using Ansible.
 
 
 ## Requirements
@@ -100,5 +100,8 @@ ansible-playbook -i 001_inventory_example install_grafana.yml
 
 
 ## License
+MIT License — see [LICENSE](LICENSE) file.
 
-MIT
+
+## Maintainer
+GitHub: [@ashokhin](https://github.com/ashokhin)

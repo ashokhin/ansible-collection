@@ -59,8 +59,8 @@ Check for details in each role's README below:
 
 
 ## License
-MIT License — see LICENSE file.
+MIT License — see [LICENSE](LICENSE) file.
 
 
 ## Maintainer
-GitHub: @ashokhin
+GitHub: [@ashokhin](https://github.com/ashokhin)

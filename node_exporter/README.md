@@ -55,5 +55,8 @@ ansible-playbook -i 001_inventory_example install_node_exporter.yml
 
 
 ## License
+MIT License — see [LICENSE](LICENSE) file.
 
-MIT
+
+## Maintainer
+GitHub: [@ashokhin](https://github.com/ashokhin)
