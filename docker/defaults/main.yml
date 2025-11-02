@@ -1,0 +1,30 @@
+---
+# defaults file for docker
+docker_apt_gpg_key_url: "https://download.docker.com/linux/ubuntu/gpg"
+docker_apt_repo_url: "https://download.docker.com/linux/ubuntu"
+docker_apt_gpg_key_path: "/etc/apt/keyrings/docker.asc"
+docker_apt_repo_component: "stable"
+docker_apt_repo_architecture: "amd64"
+docker_conflicting_packages:
+  - "docker.io"
+  - "docker-compose"
+  - "docker-compose-v2"
+  - "docker-doc"
+  - "podman-docker"
+  - "containerd"
+  - "runc"
+
+docker_version: "latest"
+docker_packages:
+  - "docker-ce"
+  - "docker-ce-cli"
+  - "containerd.io"
+  - "docker-buildx-plugin"
+  - "docker-compose-plugin"
+
+docker_services:
+  - "docker"
+  - "containerd"
+
+docker_service_name: "docker"
+...

@@ -1,0 +1,7 @@
+---
+- name: Create system group "docker"
+  ansible.builtin.group:
+    name: docker
+    system: true
+    state: present
+...

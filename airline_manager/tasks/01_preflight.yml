@@ -1,0 +1,34 @@
+---
+- name: Inherit default vars
+  ansible.builtin.set_fact:
+    airline_manager_config: "{{ airline_manager_config_default | ansible.builtin.combine(airline_manager_config, recursive=true) }}"
+  # Do not reveal sensitive information in output
+  no_log: "{{ not ansible_check_mode }}"
+  when:
+    - airline_manager_config is defined
+    - airline_manager_inherit_default_config | bool
+
+- name: "Create system group {{ airline_manager_group }}"
+  ansible.builtin.group:
+    name: "{{ airline_manager_group }}"
+    system: true
+    state: present
+  when: airline_manager_group != "root"
+
+- name: "Create system user {{ airline_manager_user }}"
+  ansible.builtin.user:
+    name: "{{ airline_manager_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ airline_manager_group }}"
+    home: "/home/{{ airline_manager_user }}"
+    create_home: true
+  when: airline_manager_user != "root"
+
+- name: Add user to group "docker"
+  ansible.builtin.user:
+    name: "{{ airline_manager_user }}"
+    groups: docker
+    append: true
+  when: airline_manager_user != "root"
+...

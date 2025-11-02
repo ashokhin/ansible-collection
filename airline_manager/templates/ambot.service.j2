@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Airline Manager
+Documentation=https://github.com/ashokhin/am4b
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+User={{ airline_manager_user }}
+Group={{ airline_manager_group }}
+type=simple
+TimeoutSec=180
+Restart=always
+ExecStartPre=-/usr/bin/docker pull {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
+ExecStart=/usr/bin/docker run --rm --name %n --volume {{ airline_manager_conf_path }}/{{ airline_manager_conf_file_name }}:/app/conf/config.yaml --publish {{ airline_manager_web_listen_port }}:{{ airline_manager_web_listen_port }} {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
+
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

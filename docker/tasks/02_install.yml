@@ -1,0 +1,36 @@
+---
+- name: Remove conflicting Docker packages
+  ansible.builtin.package:
+    name: "{{ docker_conflicting_packages }}"
+    state: absent
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ _docker_dependencies }}"
+    state: present
+    update_cache: true
+  when: "(_docker_dependencies | default())"
+
+- name: Prepare apt
+  when:
+    - "ansible_facts['pkg_mgr'] == 'apt'"
+  block:
+    - name: Import Docker apt gpg key
+      ansible.builtin.get_url:
+        url: "{{ docker_apt_gpg_key_url }}"
+        dest: "{{ docker_apt_gpg_key_path }}"
+        mode: "0644"
+
+    - name: Create repo file
+      ansible.builtin.template:
+        src: docker.sources.list.j2
+        dest: "/etc/apt/sources.list.d/docker.list"
+        mode: "0644"
+
+- name: Install Docker
+  ansible.builtin.package:
+    name: "{{ docker_packages }}"
+    state: "{{ (docker_version == 'latest') | ternary('latest', 'present') }}"
+    update_cache: true
+  notify: "restart docker"
+...

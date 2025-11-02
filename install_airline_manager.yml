@@ -1,0 +1,7 @@
+---
+- name: Airline Manager role
+  hosts: airline_manager_hosts
+  roles:
+    - role: docker
+    - role: airline_manager
+...

@@ -28,6 +28,10 @@ prometheus_config:
       static_configs:
         - targets: ["{{ alertmanager_web_listen_address }}"]
 
+    - job_name: "am4bot"
+      static_configs:
+        - targets: ["{{ airline_manager_web_listen_address}}"]
+
     - job_name: "node"
       static_configs:
         - targets: ["{{ node_exporter_web_listen_address }}"]

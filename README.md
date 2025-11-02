@@ -1,6 +1,8 @@
 # ansible-collection
 
-Lightweight Ansible Collection providing reusable roles for installation and configuration of monitoring stack of:
+Lightweight Ansible Collection providing reusable roles for installation and configuration of following services:
+- Docker engine
+- Airline Manager bot (Docker containerized)
 - Prometheus
 - Alertmanager
 - Node Exporter
@@ -10,6 +12,8 @@ Lightweight Ansible Collection providing reusable roles for installation and con
 
 ## Contents
 - Roles
+    - `docker`: install and manage Docker engine
+    - `airline_manager`: install and manage Airline Manager bot
     - `prometheus`: install and manage Prometheus monitoring system
     - `alertmanager`: install and manage Alertmanager for Prometheus
     - `node_exporter`: install and manage Prometheus Node Exporter
@@ -45,6 +49,8 @@ ansible-playbook -i 001_inventory_example install_all.yml
 ## Role defaults
 Each role exposes sensible defaults; override via role vars or play vars.
 Check for details in each role's README below:
+- [docker/README.md](docker/README.md)
+- [airline_manager/README.md](airline_manager/README.md)
 - [prometheus/README.md](prometheus/README.md)
 - [alertmanager/README.md](alertmanager/README.md)
 - [node_exporter/README.md](node_exporter/README.md)

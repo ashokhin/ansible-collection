@@ -1,0 +1,6 @@
+---
+- name: Docker role
+  hosts: docker_hosts
+  roles:
+    - role: docker
+...

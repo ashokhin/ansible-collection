@@ -1,0 +1,1 @@
+deb [arch={{ docker_apt_repo_architecture }} signed-by={{ docker_apt_gpg_key_path }}] {{ docker_apt_repo_url }} {{ ansible_facts.lsb.codename }} {{ docker_apt_repo_component }}

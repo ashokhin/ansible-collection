@@ -1,0 +1,6 @@
+---
+# vars file for airline_manager
+airline_manager_archive_name: "airline_manager-{{ airline_manager_version }}.linux-amd64.tar.gz"
+airline_manager_download_url: "{{ airline_manager_download_base_url }}/v{{ airline_manager_version }}/{{ airline_manager_archive_name }}"
+airline_manager_release_path: "{{ airline_manager_releases_path }}/v{{ airline_manager_version }}"
+...

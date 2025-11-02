@@ -1,0 +1,6 @@
+---
+# vars file for docker
+_docker_dependencies:
+  - ca-certificates
+  - curl
+...

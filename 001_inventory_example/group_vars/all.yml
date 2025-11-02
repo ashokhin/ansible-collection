@@ -19,6 +19,11 @@ haproxy_basic_auth:
     =EXAMPLE_VALUE=16535396232663334316638343365623230373136373134356664393565353934
     3065323132383933663539343138666636383966313036340a613330396664633736633037353235
 
+airline_manager_password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    =EXAMPLE_VALUE=26630653261626638303432633233316261353939336335313666626261366337
+    3864643566616666306537373538363235343262356561300a323363343238646262366630366262
+
 prometheus_version: "3.5.0"
 prometheus_web_listen_port: "9090"
 prometheus_web_listen_address: "127.0.0.1:{{ prometheus_web_listen_port }}"
@@ -31,6 +36,9 @@ alertmanager_web_listen_address: "127.0.0.1:{{ alertmanager_web_listen_port }}"
 
 grafana_web_listen_port: "3000"
 grafana_web_listen_address: "127.0.0.1:{{ grafana_web_listen_port }}"
+
+airline_manager_web_listen_port: "9150"
+airline_manager_web_listen_address: "127.0.0.1:{{ airline_manager_web_listen_port }}"
 
 haproxy_exporter_listen_address: "127.0.0.1:8405"
 

@@ -1,4 +1,14 @@
 ---
+- name: Docker role
+  hosts: docker_hosts
+  roles:
+    - role: docker
+
+- name: Airline Manager role
+  hosts: airline_manager_hosts
+  roles:
+    - role: airline_manager
+
 - name: Alertmanager role
   hosts: alertmanager_hosts
   roles:

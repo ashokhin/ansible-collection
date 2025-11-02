@@ -1,0 +1,8 @@
+---
+# tasks file for docker
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install Docker
+  ansible.builtin.import_tasks: 02_install.yml
+...

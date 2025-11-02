@@ -1,0 +1,17 @@
+---
+- name: Create Airline Manager config folder
+  ansible.builtin.file:
+    path: "{{ airline_manager_conf_path }}"
+    state: directory
+    owner: "{{ airline_manager_user }}"
+    group: "{{ airline_manager_group }}"
+    mode: "{{ airline_manager_directories_permissions }}"
+
+- name: Install Airline Manager systemd service
+  ansible.builtin.template:
+    src: ambot.service.j2
+    dest: "/etc/systemd/system/{{ airline_manager_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "restart airline_manager"
+...

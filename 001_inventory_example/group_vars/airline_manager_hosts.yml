@@ -1,0 +1,22 @@
+---
+airline_manager_inherit_default_config: false
+
+airline_manager_config:
+  url: "https://www.airlinemanager.com/"
+  username: "your_email@example.com"
+  password: "{{ airline_manager_password }}"
+  log_level: "warn"
+  budget_percent:
+    maintenance: 50
+    marketing: 70
+    fuel: 70
+  good_price:
+    fuel: 500
+    co2: 120
+  aircraft_wear_percent: 80
+  aircraft_max_hours_to_check: 48
+  aircraft_modify_limit: 3
+  fuel_critical_percent: 20
+  cron_schedule: "*/2 * * * *"
+  buy_catering_if_missing: false
+...

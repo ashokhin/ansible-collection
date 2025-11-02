@@ -1,0 +1,10 @@
+---
+- name: Create Airline Manager config file
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ airline_manager_conf_path }}/{{ airline_manager_conf_file_name }}"
+    owner: "{{ airline_manager_user }}"
+    group: "{{ airline_manager_group }}"
+    mode: "{{ airline_manager_files_permissions }}"
+  notify: "restart airline_manager"
+...

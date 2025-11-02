@@ -1,0 +1,47 @@
+---
+# defaults file for airline_manager
+airline_manager_image_name: "ashokhin/am4bot"
+airline_manager_image_version: "latest"
+airline_manager_service_name: "ambot"
+airline_manager_user: "airlinemanager"
+airline_manager_group: "airlinemanager"
+airline_manager_files_permissions: "0600"
+airline_manager_directories_permissions: "0755"
+airline_manager_conf_path: "/opt/ambot/conf"
+airline_manager_conf_file_name: "config.yaml"
+airline_manager_web_listen_port: "9150"
+airline_manager_inherit_default_config: true
+
+# Check latest config options at https://github.com/ashokhin/am4b?tab=readme-ov-file#configuration
+airline_manager_config_default:
+  url: "https://www.airlinemanager.com/"
+  username: ""
+  password: ""
+  log_level: "info"
+  budget_percent:
+    fuel: 70
+    maintenance: 30
+    marketing: 70
+  good_price:
+    fuel: 500
+    co2: 120
+  buy_catering_if_missing: true
+  catering_amount_option: "20000"
+  aircraft_wear_percent: 80
+  aircraft_max_hours_to_check: 24
+  aircraft_modify_limit: 3
+  fuel_critical_percent: 20
+  cron_schedule: "*/5 * * * *"
+  services:
+    - "company_stats"
+    - "alliance_stats"
+    - "staff_morale"
+    - "hubs"
+    - "buy_fuel"
+    - "marketing"
+    - "ac_maintenance"
+    - "depart"
+  timeout_seconds: 120
+  chrome_headless: true
+  prometheus_address: ":9150"
+...

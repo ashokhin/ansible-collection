@@ -1,0 +1,11 @@
+---
+# tasks file for airline_manager
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install Airline Manager
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration Airline Manager
+  ansible.builtin.import_tasks: 03_config.yml
+...
