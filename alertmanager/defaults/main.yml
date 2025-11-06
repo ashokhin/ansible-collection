@@ -1,8 +1,8 @@
 ---
 # defaults file for alertmanager
 alertmanager_download_base_url: "https://github.com/prometheus/alertmanager/releases/download"
-alertmanager_version: "0.28.1"
-alertmanager_archive_checksum: "sha256:5ac7ab5e4b8ee5ce4d8fb0988f9cb275efcc3f181b4b408179fafee121693311"
+alertmanager_version: "0.29.0"
+alertmanager_archive_checksum: "sha256:3b12d6dac67eef1cfbe42c6153f156e7b968e6f04298b4d966d51ba5e271a1b3"
 alertmanager_service_name: "alertmanager"
 alertmanager_user: "prometheus"
 alertmanager_group: "prometheus"

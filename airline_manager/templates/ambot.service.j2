@@ -9,7 +9,7 @@ Requires=docker.service
 [Service]
 User={{ airline_manager_user }}
 Group={{ airline_manager_group }}
-type=simple
+Type=simple
 TimeoutSec=180
 Restart=always
 ExecStartPre=-/usr/bin/docker pull {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
