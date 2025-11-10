@@ -13,7 +13,7 @@ Type=simple
 TimeoutSec=180
 Restart=always
 ExecStartPre=-/usr/bin/docker pull {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
-ExecStart=/usr/bin/docker run --rm --name %n --volume {{ airline_manager_conf_path }}/{{ airline_manager_conf_file_name }}:/app/conf/config.yaml --publish {{ airline_manager_web_listen_port }}:{{ airline_manager_web_listen_port }} {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
+ExecStart=/usr/bin/docker run --rm --name %n --volume {{ airline_manager_conf_path }}/{{ airline_manager_conf_file_name }}:/config.yaml --publish {{ airline_manager_web_listen_port }}:{{ airline_manager_web_listen_port }} {{ airline_manager_image_name }}:{{ airline_manager_image_version }}
 
 LockPersonality=true
 NoNewPrivileges=true
