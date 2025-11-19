@@ -38,6 +38,7 @@ docker_packages:
   - "docker-compose-plugin"
 ```
 
+
 ## Example Playbook
 
 ```yaml
