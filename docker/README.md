@@ -25,23 +25,8 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `docker_apt_gpg_key_path` | `"/etc/apt/keyrings/docker.asc"` | Path to store Docker APT GPG key |
 | `docker_apt_repo_component` | `"stable"` | Docker APT repository component |
 | `docker_apt_repo_architecture` | `"amd64"` | Docker APT repository architecture |
-| `docker_conflicting_packages` | [See below](#docker_conflicting_packages-list) | List of Docker-related packages to remove before installing Docker |
 | `docker_version` | `"latest"` | Version of Docker to install (set to "latest" to install the latest version) |
 | `docker_packages` | [See below](#docker_packages-list) | List of Docker packages to install |
-| `docker_services` | [See below](#docker_services-list) | List of Docker-related services to ensure are running |
-| `docker_service_name` | `"docker"` | Name of the main Docker service |
-
-#### `docker_conflicting_packages` list:
-```yaml
-docker_conflicting_packages:
-  - "docker.io"
-  - "docker-compose"
-  - "docker-compose-v2"
-  - "docker-doc"
-  - "podman-docker"
-  - "containerd"
-  - "runc"
-```
 
 #### `docker_packages` list:
 ```yaml
@@ -51,13 +36,6 @@ docker_packages:
   - "containerd.io"
   - "docker-buildx-plugin"
   - "docker-compose-plugin"
-```
-
-#### `docker_services` list:
-```yaml
-docker_services:
-  - "docker"
-  - "containerd"
 ```
 
 ## Example Playbook

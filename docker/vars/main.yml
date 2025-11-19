@@ -1,6 +1,19 @@
 ---
 # vars file for docker
 _docker_dependencies:
-  - ca-certificates
-  - curl
+  - "ca-certificates"
+  - "curl"
+
+_docker_conflicting_packages:
+  - "docker.io"
+  - "docker-compose"
+  - "docker-compose-v2"
+  - "docker-doc"
+  - "podman-docker"
+  - "containerd"
+  - "runc"
+
+_docker_services:
+  - "docker"
+  - "containerd"
 ...

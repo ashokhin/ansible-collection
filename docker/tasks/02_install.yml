@@ -1,7 +1,7 @@
 ---
 - name: Remove conflicting Docker packages
   ansible.builtin.package:
-    name: "{{ docker_conflicting_packages }}"
+    name: "{{ _docker_conflicting_packages }}"
     state: absent
 
 - name: Install dependencies
