@@ -21,7 +21,7 @@ groups:
         expr: am4_company_money{type="Airline account"} >= 3000000000
         for: 1h
         annotations:
-          title: 'Airline account has more than $3B.'
+          title: 'Airline account has more than $3B (current value ${{ value }}).'
           description: 'We are ready to buy new aircraft.'
         labels:
           severity: 'info'
