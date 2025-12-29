@@ -12,7 +12,7 @@ airline_manager_conf_file_name: "config.yaml"
 airline_manager_web_listen_port: "9150"
 airline_manager_inherit_default_config: true
 
-# Check latest config options at https://github.com/ashokhin/am4b?tab=readme-ov-file#configuration
+# Check latest config options at https://github.com/ashokhin/am4bot?tab=readme-ov-file#configuration
 airline_manager_config_default:
   url: "https://www.airlinemanager.com/"
   username: ""

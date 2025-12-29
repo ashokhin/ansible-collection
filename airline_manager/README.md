@@ -3,7 +3,7 @@
 
 ## Description
 
-Deploy [Airline Manager](https://github.com/ashokhin/am4b) automated bot for the game "Airline Manager".
+Deploy [Airline Manager](https://github.com/ashokhin/am4bot) automated bot for the game "Airline Manager".
 
 
 ## Requirements
@@ -67,7 +67,7 @@ airline_manager_config_default:
 
 > [!NOTE]
 >
-> Check latest config options at https://github.com/ashokhin/am4b?tab=readme-ov-file#configuration
+> Check latest config options at https://github.com/ashokhin/am4bot?tab=readme-ov-file#configuration
 
 > [!WARNING]
 >

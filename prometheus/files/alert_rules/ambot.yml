@@ -6,7 +6,7 @@ groups:
     rules:
       - alert: Ready to train
         # Condition for alerting
-        expr: am4_company_training_points >= 2
+        expr: am4_company_training_points >= 3
         # Delay before firing the alert
         for: 1m
         # Annotation - additional informational labels to store more information
