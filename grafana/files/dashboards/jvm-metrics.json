@@ -1366,7 +1366,7 @@
   "refresh": "10s",
   "schemaVersion": 41,
   "tags": [
-    "JVM",
+    "jvm_exporter",
     "Prometheus"
   ],
   "templating": {

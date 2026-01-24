@@ -1934,9 +1934,9 @@
   "refresh": "5m",
   "schemaVersion": 41,
   "tags": [
-    "alertmanager",
-    "prometheus",
-    "alerting"
+    "Alertmanager",
+    "Prometheus",
+    "servers"
   ],
   "templating": {
     "list": [

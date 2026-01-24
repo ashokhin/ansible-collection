@@ -1121,8 +1121,8 @@
   "refresh": "10m",
   "schemaVersion": 41,
   "tags": [
-    "speedtest",
-    "prometheus"
+    "speedtest_exporter",
+    "Prometheus"
   ],
   "templating": {
     "list": [

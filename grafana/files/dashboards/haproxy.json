@@ -11186,8 +11186,9 @@
   "refresh": "1m",
   "schemaVersion": 41,
   "tags": [
-    "haproxy",
-    "servers"
+    "HAProxy",
+    "servers",
+    "Prometheus"
   ],
   "templating": {
     "list": [

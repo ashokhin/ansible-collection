@@ -3771,7 +3771,8 @@
   "refresh": "30s",
   "schemaVersion": 41,
   "tags": [
-    "prometheus"
+    "Prometheus",
+    "servers"
   ],
   "templating": {
     "list": [

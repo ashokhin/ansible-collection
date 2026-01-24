@@ -2403,8 +2403,9 @@
   "refresh": "30s",
   "schemaVersion": 42,
   "tags": [
-    "prometheus",
-    "AirlineManager"
+    "Prometheus",
+    "AirlineManager",
+    "applications"
   ],
   "templating": {
     "list": [

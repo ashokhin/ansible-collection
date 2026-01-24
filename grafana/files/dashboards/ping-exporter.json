@@ -655,8 +655,8 @@
   "refresh": "30s",
   "schemaVersion": 41,
   "tags": [
-    "ping",
-    "prometheus"
+    "ping_exporter",
+    "Prometheus"
   ],
   "templating": {
     "list": [

@@ -1343,8 +1343,9 @@
   "refresh": "30s",
   "schemaVersion": 41,
   "tags": [
-    "grafana",
-    "prometheus"
+    "Grafana",
+    "Prometheus",
+    "servers"
   ],
   "templating": {
     "list": []
