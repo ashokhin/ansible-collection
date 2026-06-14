@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Grafana Alloy
+Documentation=https://grafana.com/docs/alloy/latest/
+After=network-online.target
+
+[Service]
+User={{ alloy_user }}
+Group={{ alloy_group }}
+Restart=on-failure
+ExecStart={{ alloy_releases_path }}/current/alloy run \
+  --server.http.listen-addr="{{ alloy_http_listen_address }}" \
+  --storage.path="{{ alloy_data_path }}" \
+  "{{ alloy_conf_path }}/config.alloy"
+
+LockPersonality=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

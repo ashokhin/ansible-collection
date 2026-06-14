@@ -1,0 +1,11 @@
+---
+- name: Create Alloy config
+  ansible.builtin.template:
+    src: alloy-config.alloy.j2
+    dest: "{{ alloy_conf_path }}/config.alloy"
+    owner: "{{ alloy_user }}"
+    group: "{{ alloy_group }}"
+    mode: "{{ alloy_files_permissions }}"
+  notify:
+    - "restart alloy"
+...

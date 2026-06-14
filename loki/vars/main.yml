@@ -1,0 +1,6 @@
+---
+# vars file for loki
+loki_archive_name: "loki-linux-amd64.zip"
+loki_download_url: "{{ loki_download_base_url }}/v{{ loki_version }}/{{ loki_archive_name }}"
+loki_release_path: "{{ loki_releases_path }}/v{{ loki_version }}"
+...

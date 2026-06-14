@@ -1,0 +1,41 @@
+---
+# handlers file for loki
+- name: Stop Loki
+  ansible.builtin.systemd_service:
+    name: "{{ loki_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: stopped
+  listen:
+    - "restart loki"
+    - "update symlink"
+
+- name: Update symlink
+  ansible.builtin.file:
+    src: "{{ loki_release_path }}"
+    path: "{{ loki_releases_path }}/current"
+    state: link
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+  listen:
+    - "update symlink"
+
+- name: Start Loki
+  ansible.builtin.systemd_service:
+    name: "{{ loki_service_name }}"
+    daemon_reload: true
+    enabled: true
+    force: true
+    state: started
+  listen:
+    - "restart loki"
+    - "update symlink"
+
+- name: "Waiting for start Loki on port {{ loki_web_listen_port }}"
+  ansible.builtin.wait_for:
+    port: "{{ loki_web_listen_port }}"
+    timeout: 60
+  listen:
+    - "restart loki"
+...

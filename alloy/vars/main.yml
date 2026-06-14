@@ -1,0 +1,6 @@
+---
+# vars file for alloy
+alloy_archive_name: "alloy-linux-amd64.zip"
+alloy_download_url: "{{ alloy_download_base_url }}/v{{ alloy_version }}/{{ alloy_archive_name }}"
+alloy_release_path: "{{ alloy_releases_path }}/v{{ alloy_version }}"
+...

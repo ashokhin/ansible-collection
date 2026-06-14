@@ -22,8 +22,9 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | Variable | Default Value | Description |
 |---|---|---|
 | `alertmanager_download_base_url` | `"https://github.com/prometheus/alertmanager/releases/download"`| Base URL to download Alertmanager binaries from |
-| `alertmanager_version` | `"0.28.1"` | Version of alertmanager to install |
-| `alertmanager_archive_checksum` | `"sha256:5ac7ab5e4b8ee5ce4d8fb0988f9cb275efcc3f181b4b408179fafee121693311"` | Checksum of the alertmanager archive for verification |
+| `alertmanager_version` | `"0.32.1"` | Version of alertmanager to install |
+| `alertmanager_archive_checksum` | `"sha256:e3ba4a543111dd4bbf436838385cbf88108f0b128a723e61fe97d3569294ad4d"` | Checksum of the alertmanager archive for verification |
+| `alertmanager_keep_last_versions_number` | `3` | Number of last versions to keep on the system |
 | `alertmanager_service_name` | `"alertmanager"` | Name of the alertmanager's systemd service |
 | `alertmanager_user` | `"prometheus"` | System user to run alertmanager service |
 | `alertmanager_group` | `"prometheus"` | System group to run alertmanager service |
@@ -40,6 +41,7 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `alertmanager_web_external_url` | `""` | External URL for alertmanager web interface (set this if Alertmanager is behind a reverse proxy or accessed via a custom domain, so links in notifications are correct) |
 | `alertmanager_cluster_listen_address` | `""` | Address for alertmanager clustering |
 | `alertmanager_config` | yaml structure | Alertmanager configuration yaml structure described [below](#alertmanager-default-configuration) |
+| `alertmanager_route` | yaml structure | Route configuration (top-level `route:` block) |
 
 
 ### Alertmanager Default Configuration

@@ -21,14 +21,15 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | Variable | Default Value | Description |
 |---|---|---|
 | `prometheus_download_base_url` | `"https://github.com/prometheus/prometheus/releases/download"` | Base URL to download Prometheus binaries from |
-| `prometheus_version` | `"3.5.0"` | Version of Prometheus to install |
-| `prometheus_archive_checksum` | `"sha256:e811827af26d822afb09a4f28314f61b618b12cff5369835a67f674d8b46f39a"` | Checksum of the Prometheus archive for verification |
+| `prometheus_version` | `"3.5.3"` | Version of Prometheus to install |
+| `prometheus_archive_checksum` | `"sha256:8c30b9d99664e39b0363c0ba54fab30a7958e9d3de27246bf26ed85e6cfb8946"` | Checksum of the Prometheus archive for verification |
+| `prometheus_keep_last_versions_number` | `3` | Number of last versions to keep on the system |
 | `prometheus_keep_last_versions_number` | `3` | Number of last Prometheus versions to keep on the system |
-| `prometheus_service_name` | `"prometheus"` | | Name of the Prometheus's systemd service |
+| `prometheus_service_name` | `"prometheus"` | Name of the Prometheus's systemd service |
 | `prometheus_user` | `"prometheus"` | System user to run Prometheus service |
 | `prometheus_group` | `"prometheus"` | System group to run Prometheus service |
 | `prometheus_files_permissions` | `"0644"` | Permissions for Prometheus config files |
-| `prometheus_directories_permissions` | | `"0755"` | Permissions for Prometheus directories |
+| `prometheus_directories_permissions` | `"0755"` | Permissions for Prometheus directories |
 | `prometheus_base_path` | `"/opt/prometheus"` | Base installation path for Prometheus |
 | `prometheus_releases_path` | `"{{ prometheus_base_path }}/releases"` | Path to store Prometheus releases |
 | `prometheus_conf_path` | `"{{ prometheus_base_path }}/conf"` | Path to store Prometheus configuration files |

@@ -144,7 +144,7 @@ groups:
         labels:
           severity: info
         annotations:
-          summary: Host CPU is underutilized (instance {{ $labels.instance }}, current value {{ $value }})
+          summary: Host CPU is underutilized (instance {{ $labels.instance }}, current idle value {{ $value | humanizePercentage }})
           description: "CPU load has been < 20% for 1 week. Consider reducing the number of CPUs."
 
       - alert: HostCpuStealNoisyNeighbor
@@ -177,14 +177,14 @@ groups:
       # x2 context switches is an arbitrary number.
       # The alert threshold depends on the nature of the application.
       # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
-      - alert: HostContextSwitchingHigh
-        expr: '(rate(node_context_switches_total[15m])/count without(mode,cpu) (node_cpu_seconds_total{mode="idle"})) / (rate(node_context_switches_total[1d])/count without(mode,cpu) (node_cpu_seconds_total{mode="idle"})) > 2'
-        for: 0m
-        labels:
-          severity: warning
-        annotations:
-          summary: Host context switching high (instance {{ $labels.instance }}, current value {{ $value }})
-          description: "Context switching is growing on the node (twice the daily average during the last 15m)"
+      #- alert: HostContextSwitchingHigh
+      #  expr: '(rate(node_context_switches_total[15m])/count without(mode,cpu) (node_cpu_seconds_total{mode="idle"})) / (rate(node_context_switches_total[1d])/count without(mode,cpu) (node_cpu_seconds_total{mode="idle"})) > 2'
+      #  for: 0m
+      #  labels:
+      #    severity: warning
+      #  annotations:
+      #    summary: Host context switching high (instance {{ $labels.instance }}, current value {{ $value }})
+      #    description: "Context switching is growing on the node (twice the daily average during the last 15m)"
 
       - alert: HostSwapIsFillingUp
         expr: '((1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80)'

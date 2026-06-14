@@ -1,0 +1,27 @@
+{{ ansible_managed | comment(decoration="// ") }}
+
+// ---------------------------------------------------------------------------
+// Alloy self-metrics
+// ---------------------------------------------------------------------------
+prometheus.exporter.self "alloy" {}
+
+prometheus.scrape "alloy_metrics" {
+  targets    = prometheus.exporter.self.alloy.targets
+  forward_to = []
+}
+
+// ---------------------------------------------------------------------------
+// Loki output
+// ---------------------------------------------------------------------------
+loki.write "default" {
+  endpoint {
+    url = "{{ alloy_loki_url }}"
+  }
+}
+{% if alloy_extra_config %}
+
+// ---------------------------------------------------------------------------
+// Extra config
+// ---------------------------------------------------------------------------
+{{ alloy_extra_config }}
+{% endif %}

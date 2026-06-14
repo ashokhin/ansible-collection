@@ -36,7 +36,6 @@ haproxy_config_default:
   global:
     params: |-
         log /dev/log    local0
-        log /dev/log    local1 notice
         chroot /var/lib/haproxy
         stats socket /run/haproxy/admin.sock mode 660 level admin
         stats timeout 30s
@@ -55,6 +54,7 @@ haproxy_config_default:
         mode    http
         option  httplog
         option  dontlognull
+        option  forwardfor
         timeout connect 5000
         timeout client  50000
         timeout server  50000

@@ -45,6 +45,7 @@ airline_manager_config_default:
     fuel: 500
     co2: 120
   buy_catering_if_missing: true
+  catering_duration_hours: "168"
   catering_amount_option: "20000"
   aircraft_wear_percent: 80
   aircraft_max_hours_to_check: 24
@@ -54,6 +55,7 @@ airline_manager_config_default:
   services:
     - "company_stats"
     - "alliance_stats"
+    - "claim_rewards"
     - "staff_morale"
     - "hubs"
     - "buy_fuel"

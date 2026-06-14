@@ -1,0 +1,56 @@
+---
+- name: "Create system group {{ alloy_group }}"
+  ansible.builtin.group:
+    name: "{{ alloy_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ alloy_user }}"
+  ansible.builtin.user:
+    name: "{{ alloy_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ alloy_group }}"
+    home: "/home/{{ alloy_user }}"
+    create_home: true
+
+- name: "Add {{ alloy_user }} to adm group for log access"
+  ansible.builtin.user:
+    name: "{{ alloy_user }}"
+    groups: adm
+    append: true
+
+- name: "Add {{ alloy_user }} to systemd-journal group for journal access"
+  ansible.builtin.user:
+    name: "{{ alloy_user }}"
+    groups: systemd-journal
+    append: true
+
+- name: Create Alloy folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ alloy_user }}"
+    group: "{{ alloy_group }}"
+    mode: "{{ alloy_directories_permissions }}"
+  loop:
+    - "{{ alloy_base_path }}"
+    - "{{ alloy_releases_path }}"
+    - "{{ alloy_conf_path }}"
+    - "{{ alloy_data_path }}"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ alloy_releases_path }}/current"
+  register: _alloy_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _alloy_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _alloy_stat_symlink.stat.exists | default(false) | bool) or
+      (_alloy_stat_symlink.stat.lnk_target | default("") != alloy_release_path)
+  notify:
+    - "update symlink"
+...

@@ -18,14 +18,12 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 57,
   "links": [],
   "panels": [
     {
       "datasource": {
         "uid": "$datasource"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -105,7 +103,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
@@ -117,7 +115,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "interval": "",
-          "legendFormat": "uptime",
+          "legendFormat": "{{instance}}: uptime",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -130,7 +128,6 @@
       "datasource": {
         "uid": "$datasource"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -198,6 +195,7 @@
           "calcs": [
             "min",
             "max",
+            "mean",
             "lastNotNull"
           ],
           "displayMode": "table",
@@ -210,7 +208,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
@@ -222,7 +220,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "interval": "",
-          "legendFormat": "duration",
+          "legendFormat": "{{instance}}: duration",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -314,15 +312,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by(job)(go_memstats_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}} (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -412,15 +412,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job) (go_memstats_stack_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_stack_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: stack inuse (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -510,42 +512,50 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_mspan_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_mspan_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
-          "legendFormat": "{{instance}}: mspan (avg)",
+          "legendFormat": "{{job}}: mspan (avg)",
+          "range": true,
           "refId": "B"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_mcache_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_mcache_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
-          "legendFormat": "{{instance}}: mcache (avg)",
+          "legendFormat": "{{job}}: mcache (avg)",
+          "range": true,
           "refId": "D"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_buck_hash_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_buck_hash_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
-          "legendFormat": "{{instance}}: buck hash (avg)",
+          "legendFormat": "{{job}}: buck hash (avg)",
+          "range": true,
           "refId": "E"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_gc_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_gc_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: gc (avg)",
+          "range": true,
           "refId": "F"
         }
       ],
@@ -635,51 +645,61 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_heap_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_heap_sys_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: heap reserved (avg)",
+          "range": true,
           "refId": "B"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_heap_inuse_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_heap_inuse_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: heap in use (avg)",
+          "range": true,
           "refId": "A"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_heap_alloc_bytes{job=~\"tns_app\",instance=~\".*\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_heap_alloc_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: heap alloc (avg)",
+          "range": true,
           "refId": "C"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_heap_idle_bytes{job=~\"tns_app\",instance=~\".*\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_heap_idle_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: heap idle (avg)",
+          "range": true,
           "refId": "D"
         },
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_heap_released_bytes{job=~\"tns_app\",instance=~\".*\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_heap_released_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: heap released (avg)",
+          "range": true,
           "refId": "E"
         }
       ],
@@ -769,15 +789,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(rate(go_memstats_alloc_bytes_total{job=\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "editorMode": "builder",
+          "expr": "avg by(job) (rate(go_memstats_alloc_bytes_total{job=\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "{{job}}: bytes malloced/s (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -867,15 +889,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
+          "editorMode": "builder",
           "expr": "rate(go_memstats_mallocs_total{job=\"$job\", instance=~\"$instance\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{job}}: obj mallocs/s (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -965,15 +989,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by(job)(go_memstats_mallocs_total{job=\"$job\", instance=~\"$instance\"} - go_memstats_frees_total{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_mallocs_total{job=\"$job\", instance=~\"$instance\"}) - (avg by(job) (go_memstats_frees_total{job=\"$job\", instance=~\"$instance\"}))",
           "interval": "",
           "legendFormat": "{{job}}: object count (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1064,15 +1090,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.0",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_goroutines{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_goroutines{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}}: goroutine count (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1112,6 +1140,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1126,7 +1155,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1159,7 +1189,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
@@ -1214,6 +1244,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1228,7 +1259,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               },
               {
                 "color": "red",
@@ -1261,15 +1293,17 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "avg by (job)(go_memstats_next_gc_bytes{job=\"$job\", instance=~\"$instance\"})",
+          "editorMode": "builder",
+          "expr": "avg by(job) (go_memstats_next_gc_bytes{job=\"$job\", instance=~\"$instance\"})",
           "interval": "",
           "legendFormat": "{{job}} next gc bytes (avg)",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1302,10 +1336,12 @@
       },
       {
         "current": {
-          "text": "alertmanager",
-          "value": "alertmanager"
+          "text": "am4bot",
+          "value": "am4bot"
         },
-        "datasource": "$datasource",
+        "datasource": {
+          "uid": "$datasource"
+        },
         "definition": "label_values(go_info, job)",
         "includeAll": false,
         "label": "job",
@@ -1314,6 +1350,7 @@
         "query": "label_values(go_info, job)",
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
@@ -1323,7 +1360,9 @@
             "$__all"
           ]
         },
-        "datasource": "$datasource",
+        "datasource": {
+          "uid": "$datasource"
+        },
         "definition": "label_values(go_info{job=\"$job\"}, instance)",
         "includeAll": true,
         "label": "instance",
@@ -1333,6 +1372,7 @@
         "query": "label_values(go_info{job=\"$job\"}, instance)",
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       }
     ]
@@ -1354,8 +1394,9 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Go Runtime Exporter",
   "uid": "e83d3a05-2363-490e-97f6-28ab4b119a35",
-  "version": 1
+  "version": 3,
+  "weekStart": ""
 }

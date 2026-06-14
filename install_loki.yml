@@ -1,0 +1,6 @@
+---
+- name: Loki role
+  hosts: loki_hosts
+  roles:
+    - role: loki
+...

@@ -1,0 +1,50 @@
+---
+# defaults file for loki
+loki_download_base_url: "https://github.com/grafana/loki/releases/download"
+loki_version: "3.6.11"
+# checksum can be found at: https://github.com/grafana/loki/releases/download/v3.6.11/SHA256SUMS
+loki_archive_checksum: "sha256:e87959e3d7f32ae3e6a74704d71f5721d51c7558ff42614a7a0c85b5da2a9c9d"
+loki_keep_last_versions_number: 3
+loki_service_name: "loki"
+loki_user: "loki"
+loki_group: "loki"
+loki_files_permissions: "0644"
+loki_directories_permissions: "0755"
+loki_base_path: "/opt/loki"
+loki_releases_path: "{{ loki_base_path }}/releases"
+loki_conf_path: "{{ loki_base_path }}/conf"
+loki_data_path: "{{ loki_base_path }}/data"
+loki_chunks_path: "{{ loki_data_path }}/chunks"
+loki_rules_path: "{{ loki_data_path }}/rules"
+loki_web_listen_port: "3100"
+loki_grpc_listen_port: "9096"
+loki_web_listen_address: "0.0.0.0:{{ loki_web_listen_port }}"
+
+loki_config:
+  auth_enabled: false
+  server:
+    http_listen_port: 3100
+    grpc_listen_port: 9096
+  common:
+    instance_addr: 127.0.0.1
+    path_prefix: /opt/loki/data
+    storage:
+      filesystem:
+        chunks_directory: /opt/loki/data/chunks
+        rules_directory: /opt/loki/data/rules
+    replication_factor: 1
+    ring:
+      kvstore:
+        store: inmemory
+  schema_config:
+    configs:
+      - from: "2020-10-24"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+  ruler:
+    alertmanager_url: http://localhost:9093
+...

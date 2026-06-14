@@ -63,7 +63,9 @@
 
 - name: Sort release directories
   ansible.builtin.set_fact:
-    _prometheus_releases_path: "{{ _prometheus_find_releases.files | sort(attribute='path') | map(attribute='path') }}"
+    _prometheus_releases_path: >-
+      {{ _prometheus_find_releases.files | sort(attribute='path') | map(attribute='path')
+      | community.general.version_sort }}
 
 - name: "Delete old release directories, keep last releases: {{ prometheus_keep_last_versions_number }}"
   ansible.builtin.file:

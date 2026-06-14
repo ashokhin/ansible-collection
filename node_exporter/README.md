@@ -18,8 +18,9 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | Variable | Default Value | Description |
 |---|---|---|
 | `node_exporter_download_base_url` | `"https://github.com/prometheus/node_exporter/releases/download"` | Base URL to download Node Exporter binaries from |
-| `node_exporter_version` | `"1.9.1"` | Version of Node Exporter to install |
-| `node_exporter_archive_checksum` | `"sha256:becb950ee80daa8ae7331d77966d94a611af79ad0d3307380907e0ec08f5b4e8"` | Checksum of the Node Exporter archive for verification |
+| `node_exporter_version` | `"1.11.1"` | Version of Node Exporter to install |
+| `node_exporter_archive_checksum` | `"sha256:9f5ea48e5bc7b656f8a91a32e7d7deb89f70f73dabd0d974418aca15f37d6810"` | Checksum of the Node Exporter archive for verification |
+| `node_exporter_keep_last_versions_number` | `3` | Number of last versions to keep on the system |
 | `node_exporter_service_name` | `"node-exporter"` | Name of the Node Exporter's systemd service |
 | `node_exporter_user` | `"prom-exporter"` | System user to run Node Exporter service |
 | `node_exporter_group` | `"prom-exporter"` | System group to run Node Exporter service |

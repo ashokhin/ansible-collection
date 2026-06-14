@@ -1,0 +1,24 @@
+---
+# defaults file for alloy
+alloy_download_base_url: "https://github.com/grafana/alloy/releases/download"
+alloy_version: "1.17.0"
+# checksum can be found at: https://github.com/grafana/alloy/releases/download/v1.17.0/SHA256SUMS
+alloy_archive_checksum: "sha256:a905f3c750855323e12b23630150972956e24c993f0c9170ca2f0af4bd442d8e"
+alloy_keep_last_versions_number: 3
+alloy_service_name: "alloy"
+alloy_user: "alloy"
+alloy_group: "alloy"
+alloy_files_permissions: "0644"
+alloy_directories_permissions: "0755"
+alloy_base_path: "/opt/alloy"
+alloy_releases_path: "{{ alloy_base_path }}/releases"
+alloy_conf_path: "{{ alloy_base_path }}/conf"
+alloy_data_path: "{{ alloy_base_path }}/data"
+alloy_http_listen_port: "12345"
+alloy_http_listen_address: "0.0.0.0:{{ alloy_http_listen_port }}"
+alloy_loki_url: "http://localhost:3100/loki/api/v1/push"
+
+# Extra config appended verbatim to the end of the generated config.alloy.
+# Use this to add custom components (sources, processors, exports) per inventory group.
+alloy_extra_config: ""
+...

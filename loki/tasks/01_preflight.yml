@@ -1,0 +1,46 @@
+---
+- name: "Create system group {{ loki_group }}"
+  ansible.builtin.group:
+    name: "{{ loki_group }}"
+    system: true
+    state: present
+
+- name: "Create system user {{ loki_user }}"
+  ansible.builtin.user:
+    name: "{{ loki_user }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    group: "{{ loki_group }}"
+    home: "/home/{{ loki_user }}"
+    create_home: true
+
+- name: Create Loki folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+    mode: "{{ loki_directories_permissions }}"
+  loop:
+    - "{{ loki_base_path }}"
+    - "{{ loki_releases_path }}"
+    - "{{ loki_conf_path }}"
+    - "{{ loki_data_path }}"
+    - "{{ loki_chunks_path }}"
+    - "{{ loki_rules_path }}"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ loki_releases_path }}/current"
+  register: _loki_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _loki_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _loki_stat_symlink.stat.exists | default(false) | bool) or
+      (_loki_stat_symlink.stat.lnk_target | default("") != loki_release_path)
+  notify:
+    - "update symlink"
+...

@@ -28,7 +28,7 @@ airline_manager_config_default:
   buy_catering_if_missing: true
   catering_duration_hours: "168"
   catering_amount_option: "20000"
-  aircraft_wear_percent: 80
+  aircraft_wear_percent: "80"
   aircraft_max_hours_to_check: 24
   aircraft_modify_limit: 3
   fuel_critical_percent: 20

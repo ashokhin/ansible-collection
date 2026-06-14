@@ -31,7 +31,7 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `grafana_user` | `"grafana"` | System user to run Grafana service |
 | `grafana_group` | `"grafana"` | System group to run Grafana service |
 | `grafana_files_permissions` | `"0644"` | Permissions for Grafana config files |
-| `grafana_directories_permissions` | `"0755"` | | Permissions for Grafana directories |
+| `grafana_directories_permissions` | `"0755"` | Permissions for Grafana directories |
 | `grafana_conf_path` | `"/etc/grafana/grafana.ini"` | Path to Grafana main configuration file |
 | `grafana_provisioning_dir` | `"/etc/grafana/provisioning"` | Path to Grafana provisioning directory |
 | `grafana_datasources` | `{}` | Grafana datasources |

@@ -51,4 +51,24 @@
     mode: "0644"
   notify:
     - "restart alertmanager"
+
+- name: Get list of release directories
+  ansible.builtin.find:
+    paths:
+      - "{{ alertmanager_releases_path }}"
+    file_type: "directory"
+    depth: 1
+  register: _alertmanager_find_releases
+
+- name: Sort release directories
+  ansible.builtin.set_fact:
+    _alertmanager_releases_path: >-
+      {{ _alertmanager_find_releases.files | sort(attribute='path') | map(attribute='path')
+      | community.general.version_sort }}
+
+- name: "Delete old release directories, keep last releases: {{ alertmanager_keep_last_versions_number }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _alertmanager_releases_path[:-alertmanager_keep_last_versions_number] }}"
 ...

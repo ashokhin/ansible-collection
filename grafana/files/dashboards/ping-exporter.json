@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 2,
   "links": [],
   "panels": [
     {
@@ -40,7 +39,11 @@
               "type": "auto"
             },
             "filterable": false,
-            "inspect": false
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50
           },
           "mappings": [],
           "thresholds": {
@@ -61,7 +64,7 @@
             },
             "properties": [
               {
-                "id": "custom.hidden",
+                "id": "custom.hideFrom.viz",
                 "value": true
               },
               {
@@ -250,19 +253,11 @@
       "id": 1,
       "options": {
         "cellHeight": "md",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
         "frameIndex": 0,
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": {
@@ -271,7 +266,6 @@
           "editorMode": "code",
           "expr": "(1 - sum(ping_loss_ratio{job=~\"$job\",instance=~\"$instance\",target=~\"$target\",ip_version=~\"$ip_version\"}) by (instance,ip,ip_version,target)) / count(ping_loss_ratio{job=~\"$job\",instance=~\"$instance\",target=~\"$target\",ip_version=~\"$ip_version\"}) by (instance,ip,ip_version,target)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "intervalFactor": 1,
           "legendFormat": "",
@@ -285,7 +279,6 @@
           "editorMode": "code",
           "expr": "sum(ping_loss_ratio{job=~\"$job\",instance=~\"$instance\",target=~\"$target\",ip_version=~\"$ip_version\"}) by (instance,ip,ip_version,target)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "intervalFactor": 1,
           "legendFormat": "",
@@ -338,7 +331,6 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -351,6 +343,7 @@
             "axisLabel": "RTT",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 35,
             "gradientMode": "none",
@@ -367,6 +360,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -384,7 +378,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": 0
               }
             ]
           },
@@ -586,11 +581,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "8.2.4",
+      "pluginVersion": "12.4.0",
       "repeat": "target",
       "repeatDirection": "h",
       "targets": [
@@ -653,7 +649,7 @@
   ],
   "preload": false,
   "refresh": "30s",
-  "schemaVersion": 41,
+  "schemaVersion": 42,
   "tags": [
     "ping_exporter",
     "Prometheus"
@@ -697,6 +693,7 @@
         },
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       },
@@ -723,6 +720,7 @@
         },
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       },
@@ -749,6 +747,7 @@
         },
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       },
@@ -775,6 +774,7 @@
         },
         "refresh": 2,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       }
@@ -788,5 +788,6 @@
   "timezone": "browser",
   "title": "↕️Ping Exporter",
   "uid": "b9164c0a-71a1-42a3-8297-1827dd516f9d",
-  "version": 27
+  "version": 2,
+  "weekStart": ""
 }

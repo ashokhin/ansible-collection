@@ -1,0 +1,11 @@
+---
+- name: Create Loki config
+  ansible.builtin.template:
+    src: loki-config.yml.j2
+    dest: "{{ loki_conf_path }}/loki.yml"
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+    mode: "{{ loki_files_permissions }}"
+  notify:
+    - "restart loki"
+...

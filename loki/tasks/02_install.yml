@@ -1,0 +1,86 @@
+---
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: loki
+  register: _loki_tempdir
+  check_mode: false
+  changed_when: false
+
+- name: "Create release folder for v{{ loki_version }}"
+  ansible.builtin.file:
+    path: "{{ loki_release_path }}"
+    state: directory
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+    mode: "{{ loki_directories_permissions }}"
+  notify:
+    - "update symlink"
+
+- name: "Download Loki v{{ loki_version }}"
+  ansible.builtin.get_url:
+    url: "{{ loki_download_url }}"
+    dest: "{{ _loki_tempdir.path }}/{{ loki_archive_name }}"
+    checksum: "{{ loki_archive_checksum }}"
+    mode: "{{ loki_files_permissions }}"
+  check_mode: false
+  changed_when: false
+
+- name: "Unarchive Loki into '{{ loki_release_path }}'"
+  ansible.builtin.unarchive:
+    src: "{{ _loki_tempdir.path }}/{{ loki_archive_name }}"
+    dest: "{{ loki_release_path }}"
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+    remote_src: true
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+    - "update symlink"
+
+- name: Rename Loki binary
+  ansible.builtin.command:
+    argv:
+      - mv
+      - "{{ loki_release_path }}/loki-linux-amd64"
+      - "{{ loki_release_path }}/loki"
+    creates: "{{ loki_release_path }}/loki"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Set Loki binary executable
+  ansible.builtin.file:
+    path: "{{ loki_release_path }}/loki"
+    mode: "0755"
+    owner: "{{ loki_user }}"
+    group: "{{ loki_group }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+    - "update symlink"
+
+- name: Install Loki systemd service
+  ansible.builtin.template:
+    src: loki.service.j2
+    dest: "/etc/systemd/system/{{ loki_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "restart loki"
+
+- name: Get list of release directories
+  ansible.builtin.find:
+    paths:
+      - "{{ loki_releases_path }}"
+    file_type: "directory"
+    depth: 1
+  register: _loki_find_releases
+
+- name: Sort release directories
+  ansible.builtin.set_fact:
+    _loki_release_dirs: >-
+      {{ _loki_find_releases.files | sort(attribute='path') | map(attribute='path')
+      | community.general.version_sort }}
+
+- name: "Delete old release directories, keep last releases: {{ loki_keep_last_versions_number }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _loki_release_dirs[:-loki_keep_last_versions_number] }}"
+...

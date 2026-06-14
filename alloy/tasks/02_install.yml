@@ -1,0 +1,86 @@
+---
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: alloy
+  register: _alloy_tempdir
+  check_mode: false
+  changed_when: false
+
+- name: "Create release folder for v{{ alloy_version }}"
+  ansible.builtin.file:
+    path: "{{ alloy_release_path }}"
+    state: directory
+    owner: "{{ alloy_user }}"
+    group: "{{ alloy_group }}"
+    mode: "{{ alloy_directories_permissions }}"
+  notify:
+    - "update symlink"
+
+- name: "Download Alloy v{{ alloy_version }}"
+  ansible.builtin.get_url:
+    url: "{{ alloy_download_url }}"
+    dest: "{{ _alloy_tempdir.path }}/{{ alloy_archive_name }}"
+    checksum: "{{ alloy_archive_checksum }}"
+    mode: "{{ alloy_files_permissions }}"
+  check_mode: false
+  changed_when: false
+
+- name: "Unarchive Alloy into '{{ alloy_release_path }}'"
+  ansible.builtin.unarchive:
+    src: "{{ _alloy_tempdir.path }}/{{ alloy_archive_name }}"
+    dest: "{{ alloy_release_path }}"
+    owner: "{{ alloy_user }}"
+    group: "{{ alloy_group }}"
+    remote_src: true
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+    - "update symlink"
+
+- name: Rename Alloy binary
+  ansible.builtin.command:
+    argv:
+      - mv
+      - "{{ alloy_release_path }}/alloy-linux-amd64"
+      - "{{ alloy_release_path }}/alloy"
+    creates: "{{ alloy_release_path }}/alloy"
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Set Alloy binary executable
+  ansible.builtin.file:
+    path: "{{ alloy_release_path }}/alloy"
+    mode: "0755"
+    owner: "{{ alloy_user }}"
+    group: "{{ alloy_group }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+    - "update symlink"
+
+- name: Install Alloy systemd service
+  ansible.builtin.template:
+    src: alloy.service.j2
+    dest: "/etc/systemd/system/{{ alloy_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "restart alloy"
+
+- name: Get list of release directories
+  ansible.builtin.find:
+    paths:
+      - "{{ alloy_releases_path }}"
+    file_type: "directory"
+    depth: 1
+  register: _alloy_find_releases
+
+- name: Sort release directories
+  ansible.builtin.set_fact:
+    _alloy_release_dirs: >-
+      {{ _alloy_find_releases.files | sort(attribute='path') | map(attribute='path')
+      | community.general.version_sort }}
+
+- name: "Delete old release directories, keep last releases: {{ alloy_keep_last_versions_number }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _alloy_release_dirs[:-alloy_keep_last_versions_number] }}"
+...

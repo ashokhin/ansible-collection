@@ -1,0 +1,24 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Loki log aggregation system
+Documentation=https://grafana.com/docs/loki/latest/
+After=network-online.target
+
+[Service]
+User={{ loki_user }}
+Group={{ loki_group }}
+Restart=on-failure
+ExecStart={{ loki_releases_path }}/current/loki \
+  -config.file="{{ loki_conf_path }}/loki.yml"
+
+LockPersonality=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

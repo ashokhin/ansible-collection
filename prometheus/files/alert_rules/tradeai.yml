@@ -1,0 +1,73 @@
+groups:
+  - name: TradeAI
+    rules:
+
+      # ── Trades ─────────────────────────────────────────────────────────────
+      # changes() is intentional here: we want to detect any value change,
+      # and the "> 0" guard on qty prevents false alerts on bot restart (reset to 0).
+
+      - alert: TradeAIBuy
+        expr: >
+          (tradeai_last_trade_qty{action="BUY"} > 0)
+          and
+          (changes(tradeai_last_trade_qty{action="BUY"}[11m]) > 0)
+        annotations:
+          title: '🟢 AI Bot: BUY executed'
+          description: 'Bought {{ $value | printf "%.6f" }} units ({{ $labels.asset }})'
+        labels:
+          severity: info
+
+      - alert: TradeAISell
+        expr: >
+          (tradeai_last_trade_qty{action="SELL"} > 0)
+          and
+          (changes(tradeai_last_trade_qty{action="SELL"}[11m]) > 0)
+        annotations:
+          title: '🔵 AI Bot: SELL executed'
+          description: 'Sold {{ $value | printf "%.6f" }} units ({{ $labels.asset }})'
+        labels:
+          severity: info
+
+      - alert: TradeAIStopLoss
+        # delta() > 0: fires only when stop_losses_total actually increased.
+        expr: >
+          tradeai_stop_losses_total
+          and
+          (delta(tradeai_stop_losses_total[11m]) > 0)
+        annotations:
+          title: '🔴 AI Bot: STOP LOSS triggered'
+          description: 'Stop-loss exit #{{ $value | printf "%.0f" }} for {{ $labels.asset }}. BUY blocked for 5 days.'
+        labels:
+          severity: warning
+
+      # ── Circuit breaker ────────────────────────────────────────────────────
+
+      - alert: TradeAICircuitBreaker
+        expr: tradeai_circuit_breaker == 1
+        annotations:
+          title: '⛔ AI Bot: circuit breaker triggered'
+          description: 'Portfolio drawdown exceeded circuit_breaker_pct threshold for {{ $labels.asset }}. New trades halted until recovery or restart.'
+        labels:
+          severity: critical
+
+      # ── Health ─────────────────────────────────────────────────────────────
+
+      - alert: TradeAIDown
+        expr: (time() - tradeai_last_cycle_timestamp) > 7200
+        for: 5m
+        annotations:
+          title: '⚠️ AI Bot: no cycle for 2+ hours'
+          description: 'Last cycle {{ $value | printf "%.0f" }}s ago. Check: systemctl status tradeai'
+        labels:
+          severity: critical
+
+      - alert: TradeAIHighErrors
+        # delta() > 3: fires only when errors actually increased by more than 3 in 1h.
+        # changes() would also fire if the value decreased (e.g. after restart), which is wrong.
+        expr: delta(tradeai_errors_total[1h]) > 3
+        for: 5m
+        annotations:
+          title: '⚠️ AI Bot: high error rate'
+          description: 'More than 3 failed cycles in the last hour for {{ $labels.asset }}. Check: journalctl -u tradeai -n 50'
+        labels:
+          severity: warning

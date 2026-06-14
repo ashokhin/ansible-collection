@@ -1,0 +1,6 @@
+---
+- name: Alloy role
+  hosts: alloy_hosts
+  roles:
+    - role: alloy
+...
