@@ -21,12 +21,10 @@
     owner: "{{ alertmanager_user }}"
     group: "{{ alertmanager_group }}"
     mode: "{{ alertmanager_directories_permissions }}"
-  loop:
-    - "{{ alertmanager_base_path }}"
-    - "{{ alertmanager_releases_path }}"
-    - "{{ alertmanager_conf_path }}"
-    - "{{ alertmanager_data_path }}"
-    - "{{ alertmanager_message_templates_path }}"
+  loop: >-
+    {{ [alertmanager_base_path, alertmanager_releases_path,
+        alertmanager_conf_path, alertmanager_data_path]
+    + alertmanager_message_templates_paths }}
 
 - name: Check current release symlink
   ansible.builtin.stat:

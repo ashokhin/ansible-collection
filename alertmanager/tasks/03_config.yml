@@ -12,10 +12,11 @@
 - name: Create Alertmanager message templates
   ansible.builtin.copy:
     src: files/message_templates/
-    dest: "{{ alertmanager_message_templates_path }}/"
+    dest: "{{ item }}/"
     owner: "{{ alertmanager_user }}"
     group: "{{ alertmanager_group }}"
     mode: "{{ alertmanager_files_permissions }}"
+  loop: "{{ alertmanager_message_templates_paths }}"
   notify:
     - "reload alertmanager"
 ...

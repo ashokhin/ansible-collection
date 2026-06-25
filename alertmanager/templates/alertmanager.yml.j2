@@ -4,23 +4,16 @@ route:
   {{ alertmanager_route | to_nice_yaml(indent=2) | indent(2, False) }}
 
 templates:
-  - '{{ alertmanager_message_templates_path }}/*'
+{% for path in alertmanager_message_templates_paths %}
+  - '{{ path }}/*'
+{% endfor %}
 {% if alertmanager_receivers | length %}
 
 receivers:
-{% for receiver in alertmanager_receivers %}
-{% if receiver.type == "telegram" %}
-  - name: '{{ receiver.name }}'
-    telegram_configs:
-      - bot_token: '{{ receiver.bot_token }}'
-        chat_id: {{ receiver.chat_id }}
-        message: '{{ receiver.message }}'
-        send_resolved: {{ receiver.send_resolved | default(true) | bool | lower }}
-{% endif %}
-{% endfor %}
+  {{ alertmanager_receivers | to_nice_yaml(indent=2) | regex_replace("(chat_id:) '(-?[0-9]+)'", "\\1 \\2") | indent(2) }}
 {% endif %}
 {% if alertmanager_inhibit_rules | length %}
 
 inhibit_rules:
-{{ alertmanager_inhibit_rules | to_nice_yaml(indent=2) }}
+  {{ alertmanager_inhibit_rules | to_nice_yaml(indent=2) | indent(2) }}
 {% endif %}

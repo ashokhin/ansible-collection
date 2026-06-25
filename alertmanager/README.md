@@ -34,7 +34,7 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `alertmanager_releases_path` | `"{{ alertmanager_base_path }}/releases"` | Path to store alertmanager releases |
 | `alertmanager_conf_path` | `"{{ alertmanager_base_path }}/conf"` | Path to store alertmanager configuration files |
 | `alertmanager_data_path` | `"{{ alertmanager_base_path }}/data"` | Path to store alertmanager data |
-| `alertmanager_message_templates_path` | `"{{ alertmanager_conf_path }}/message_templates"` | Path to store alertmanager message templates |
+| `alertmanager_message_templates_paths` | `["{{ alertmanager_conf_path }}/message_templates"]` | List of paths rendered into `templates:` in alertmanager.yml; directories are created and role templates are copied to each |
 | `alertmanager_data_retention` | `"365d"` | Data retention period for alertmanager |
 | `alertmanager_web_listen_port` | `9093` | Port for alertmanager web interface |
 | `alertmanager_web_listen_address` | `"0.0.0.0:{{ alertmanager_web_listen_port }}"` | Address for alertmanager web interface |
@@ -42,7 +42,7 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `alertmanager_cluster_listen_address` | `""` | Address for alertmanager clustering |
 | `alertmanager_config` | yaml structure | Alertmanager configuration yaml structure described [below](#alertmanager-default-configuration) |
 | `alertmanager_route` | yaml structure | Route configuration (top-level `route:` block) |
-| `alertmanager_receivers` | `[]` | List of receivers. Each entry supports: `name`, `type`, `send_resolved` (default: `true`), and integration-specific fields |
+| `alertmanager_receivers` | `[]` | List of receivers in native Alertmanager format (rendered as-is into `receivers:`) |
 | `alertmanager_inhibit_rules` | `[]` | List of inhibit rules |
 
 
