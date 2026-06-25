@@ -42,6 +42,8 @@ Variables that are present in [defaults/main.yml](defaults/main.yml):
 | `alertmanager_cluster_listen_address` | `""` | Address for alertmanager clustering |
 | `alertmanager_config` | yaml structure | Alertmanager configuration yaml structure described [below](#alertmanager-default-configuration) |
 | `alertmanager_route` | yaml structure | Route configuration (top-level `route:` block) |
+| `alertmanager_receivers` | `[]` | List of receivers. Each entry supports: `name`, `type`, `send_resolved` (default: `true`), and integration-specific fields |
+| `alertmanager_inhibit_rules` | `[]` | List of inhibit rules |
 
 
 ### Alertmanager Default Configuration

@@ -15,6 +15,7 @@ receivers:
       - bot_token: '{{ receiver.bot_token }}'
         chat_id: {{ receiver.chat_id }}
         message: '{{ receiver.message }}'
+        send_resolved: {{ receiver.send_resolved | default(true) | bool | lower }}
 {% endif %}
 {% endfor %}
 {% endif %}

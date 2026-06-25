@@ -44,4 +44,8 @@ alertmanager_route:
   group_interval: 5m
   repeat_interval: 1h
   receiver: 'web.hook'
+
+alertmanager_receivers: []
+
+alertmanager_inhibit_rules: []
 ...
