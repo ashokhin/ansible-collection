@@ -11,11 +11,12 @@
 
 - name: Create Prometheus alert rules
   ansible.builtin.copy:
-    src: files/alert_rules/
+    src: "{{ item }}"
     dest: "{{ prometheus_alert_rules_path }}/"
     owner: "{{ prometheus_user }}"
     group: "{{ prometheus_group }}"
     mode: "{{ prometheus_files_permissions }}"
+  loop: "{{ lookup('ansible.builtin.fileglob', 'files/alert_rules/*', wantlist=True) }}"
   notify:
     - "reload prometheus"
 ...

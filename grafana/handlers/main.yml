@@ -31,24 +31,4 @@
   listen:
     - "restart grafana"
     - "start grafana"
-
-- name: Search dashboards
-  ansible.builtin.find:
-    paths: "{{ grafana_config.paths.data }}/dashboards"
-    file_type: file
-    patterns: "*.json"
-  register: _grafana_find_output
-  listen:
-    - "update dashboards permissions"
-
-- name: Update dashboards permissions
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: file
-    owner: "{{ grafana_user }}"
-    group: "{{ grafana_group }}"
-    mode: "{{ grafana_files_permissions }}"
-  loop: "{{ _grafana_find_output.files }}"
-  listen:
-    - "update dashboards permissions"
 ...

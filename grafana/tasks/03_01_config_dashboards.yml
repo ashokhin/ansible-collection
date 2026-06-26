@@ -18,13 +18,11 @@
     mode: "{{ grafana_directories_permissions }}"
 
 - name: Provision Grafana dashboards
-  ansible.posix.synchronize:
-    src: files/dashboards/
-    dest: "{{ grafana_config.paths.data }}/dashboards"
-    archive: false
-    recursive: true
-    times: true
-    checksum: true
-  notify:
-    - "update dashboards permissions"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ grafana_config.paths.data }}/dashboards/"
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
+    mode: "{{ grafana_files_permissions }}"
+  loop: "{{ lookup('ansible.builtin.fileglob', 'files/dashboards/*', wantlist=True) }}"
 ...
