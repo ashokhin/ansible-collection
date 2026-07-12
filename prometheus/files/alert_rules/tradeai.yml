@@ -1,3 +1,6 @@
+#
+# Please do not change this file directly since it is managed by Ansible and will be overwritten.
+#
 groups:
   - name: TradeAI
     rules:
@@ -28,15 +31,29 @@ groups:
         labels:
           severity: info
 
+      - alert: TradeAITakeProfit
+        expr: >
+          (tradeai_last_trade_qty{action="TAKE_PROFIT"} > 0)
+          and
+          (changes(tradeai_last_trade_qty{action="TAKE_PROFIT"}[11m]) > 0)
+        annotations:
+          title: '💰 AI Bot: TAKE PROFIT triggered'
+          description: 'Take-profit exit: sold {{ $value | printf "%.6f" }} units ({{ $labels.asset }})'
+        labels:
+          severity: info
+
       - alert: TradeAIStopLoss
         # delta() > 0: fires only when stop_losses_total actually increased.
+        # Result value is cooldown_days so the annotation shows the actual configured cooldown.
         expr: >
-          tradeai_stop_losses_total
-          and
+          tradeai_strategy_cooldown_days
+          * on(job, instance, asset) group_left()
+          (tradeai_stop_losses_total > 0)
+          and on(job, instance, asset)
           (delta(tradeai_stop_losses_total[11m]) > 0)
         annotations:
           title: '🔴 AI Bot: STOP LOSS triggered'
-          description: 'Stop-loss exit #{{ $value | printf "%.0f" }} for {{ $labels.asset }}. BUY blocked for 5 days.'
+          description: 'Stop-loss exit for {{ $labels.asset }}. BUY blocked for {{ $value | printf "%.0f" }} days.'
         labels:
           severity: warning
 
