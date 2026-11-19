@@ -4,10 +4,10 @@
   roles:
     - role: docker
 
-- name: Airline Manager role
-  hosts: airline_manager_hosts
-  roles:
-    - role: airline_manager
+#- name: Airline Manager role
+#  hosts: airline_manager_hosts
+#  roles:
+#    - role: airline_manager
 
 - name: Alertmanager role
   hosts: alertmanager_hosts
@@ -23,6 +23,16 @@
   hosts: node_exporter_hosts
   roles:
     - role: node_exporter
+
+- name: Loki role
+  hosts: loki_hosts
+  roles:
+    - role: loki
+
+- name: Alloy role
+  hosts: alloy_hosts
+  roles:
+    - role: alloy
 
 - name: Vulnerability scanner role
   hosts: vuln_scanner_hosts
