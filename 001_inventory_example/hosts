@@ -16,5 +16,8 @@
 [airline_manager_hosts]
 192.168.1.2
 
+[vuln_scanner_hosts]
+192.168.1.2
+
 [docker_hosts:children]
 airline_manager_hosts

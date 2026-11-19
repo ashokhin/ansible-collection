@@ -18,10 +18,10 @@ groups:
           severity: 'info'
 
       - alert: Ready to buy
-        expr: am4_company_money{type="Airline account"} / 1000000000 >= 45
+        expr: am4_company_money{type="Airline account"} / 1000000000 >= 80
         for: 1h
         annotations:
-          title: 'Airline account has more than $45B (current value ${{ printf "%.2fB" $value }}).'
+          title: 'Airline account has more than $80B (current value ${{ printf "%.2fB" $value }}).'
           description: 'We are ready to buy new aircraft.'
         labels:
           severity: 'info'

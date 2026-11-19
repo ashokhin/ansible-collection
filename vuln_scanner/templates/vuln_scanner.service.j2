@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Vulnerability scan exported as Prometheus metrics
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart={{ vuln_scanner_bin_path }}/vuln_scan.sh
+TimeoutStartSec=1h
+Nice=10
+IOSchedulingClass=idle

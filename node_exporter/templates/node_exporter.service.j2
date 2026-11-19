@@ -10,7 +10,8 @@ User={{ node_exporter_user }}
 Group={{ node_exporter_group }}
 Restart=on-failure
 ExecStart={{ node_exporter_releases_path }}/current/node_exporter \
-  --web.listen-address="{{ node_exporter_web_listen_address }}"
+  --web.listen-address="{{ node_exporter_web_listen_address }}" \
+  --collector.textfile.directory="{{ node_exporter_textfile_path }}"
 
 LockPersonality=true
 NoNewPrivileges=true

@@ -1,0 +1,6 @@
+---
+# vars file for vuln_scanner
+vuln_scanner_archive_name: "trivy_{{ vuln_scanner_trivy_version }}_Linux-64bit.tar.gz"
+vuln_scanner_download_url: "{{ vuln_scanner_trivy_download_base_url }}/v{{ vuln_scanner_trivy_version }}/{{ vuln_scanner_archive_name }}"
+vuln_scanner_release_path: "{{ vuln_scanner_releases_path }}/v{{ vuln_scanner_trivy_version }}"
+...

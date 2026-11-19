@@ -1,0 +1,45 @@
+---
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - jq
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create vulnerability scanner folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ vuln_scanner_directories_permissions }}"
+  loop:
+    - "{{ vuln_scanner_base_path }}"
+    - "{{ vuln_scanner_releases_path }}"
+    - "{{ vuln_scanner_bin_path }}"
+    - "{{ vuln_scanner_cache_path }}"
+
+- name: Create textfile collector folder
+  ansible.builtin.file:
+    path: "{{ vuln_scanner_textfile_path }}"
+    state: directory
+    owner: root
+    group: "{{ vuln_scanner_textfile_group }}"
+    mode: "0750"
+
+- name: Check current release symlink
+  ansible.builtin.stat:
+    path: "{{ vuln_scanner_releases_path }}/current"
+  register: _vuln_scanner_stat_symlink
+
+- name: Notify update symlink
+  ansible.builtin.set_fact:
+    _vuln_scanner_fact_update_symlink: true
+  changed_when: true
+  when:
+    - (not _vuln_scanner_stat_symlink.stat.exists | default(false) | bool) or
+      (_vuln_scanner_stat_symlink.stat.lnk_target | default("") != vuln_scanner_release_path)
+  notify:
+    - "update vuln_scanner symlink"
+...

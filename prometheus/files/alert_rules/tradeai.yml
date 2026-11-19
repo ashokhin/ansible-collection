@@ -5,7 +5,6 @@ groups:
   - name: TradeAI
     rules:
 
-      # ── Trades ─────────────────────────────────────────────────────────────
       # changes() is intentional here: we want to detect any value change,
       # and the "> 0" guard on qty prevents false alerts on bot restart (reset to 0).
 
@@ -47,8 +46,6 @@ groups:
         # Result value is cooldown_days so the annotation shows the actual configured cooldown.
         expr: >
           tradeai_strategy_cooldown_days
-          * on(job, instance, asset) group_left()
-          (tradeai_stop_losses_total > 0)
           and on(job, instance, asset)
           (delta(tradeai_stop_losses_total[11m]) > 0)
         annotations:
@@ -57,8 +54,6 @@ groups:
         labels:
           severity: warning
 
-      # ── Circuit breaker ────────────────────────────────────────────────────
-
       - alert: TradeAICircuitBreaker
         expr: tradeai_circuit_breaker == 1
         annotations:
@@ -66,8 +61,6 @@ groups:
           description: 'Portfolio drawdown exceeded circuit_breaker_pct threshold for {{ $labels.asset }}. New trades halted until recovery or restart.'
         labels:
           severity: critical
-
-      # ── Health ─────────────────────────────────────────────────────────────
 
       - alert: TradeAIDown
         expr: (time() - tradeai_last_cycle_timestamp) > 7200
@@ -85,6 +78,32 @@ groups:
         for: 5m
         annotations:
           title: '⚠️ AI Bot: high error rate'
-          description: 'More than 3 failed cycles in the last hour for {{ $labels.asset }}. Check: journalctl -u tradeai -n 50'
+          description: 'More than 3 failed cycles in the last hour for {{ $labels.asset }}. Check: journalctl -u {{ $labels.job }} -n 50'
+        labels:
+          severity: warning
+
+      - alert: TradeAITradingPaused
+        # changes() > 0 on the 0->1 edge only (tradeai_trading_paused == 1 guard): fires once
+        # when the optimizer's Sharpe drops below min_sharpe_to_trade, not on every cycle while
+        # still paused. Result value is the current Sharpe ratio, not the paused flag itself.
+        expr: >
+          tradeai_dynamic_sharpe
+          and on(job, instance, asset)
+          ((tradeai_trading_paused == 1) and (changes(tradeai_trading_paused[11m]) > 0))
+        annotations:
+          title: '⏸️ AI Bot: trading paused (low Sharpe)'
+          description: 'New BUYs blocked for {{ $labels.asset }}: optimizer Sharpe is {{ $value | printf "%.2f" }}, below min_sharpe_to_trade. Open positions still managed normally.'
+        labels:
+          severity: warning
+
+      - alert: TradeAITradingResumed
+        # Mirror of TradeAITradingPaused: fires once on the 1->0 edge.
+        expr: >
+          tradeai_dynamic_sharpe
+          and on(job, instance, asset)
+          ((tradeai_trading_paused == 0) and (changes(tradeai_trading_paused[11m]) > 0))
+        annotations:
+          title: '▶️ AI Bot: trading resumed'
+          description: 'New BUYs re-enabled for {{ $labels.asset }}: optimizer Sharpe recovered to {{ $value | printf "%.2f" }}.'
         labels:
           severity: warning

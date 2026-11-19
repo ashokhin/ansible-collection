@@ -1,0 +1,35 @@
+---
+- name: Install scan script
+  ansible.builtin.template:
+    src: vuln_scan.sh.j2
+    dest: "{{ vuln_scanner_bin_path }}/vuln_scan.sh"
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Install systemd service
+  ansible.builtin.template:
+    src: vuln_scanner.service.j2
+    dest: "/etc/systemd/system/{{ vuln_scanner_service_name }}.service"
+    mode: "0644"
+  notify:
+    - "reload vuln_scanner systemd"
+
+- name: Install systemd timer
+  ansible.builtin.template:
+    src: vuln_scanner.timer.j2
+    dest: "/etc/systemd/system/{{ vuln_scanner_service_name }}.timer"
+    mode: "0644"
+  notify:
+    - "reload vuln_scanner systemd"
+
+- name: Flush handlers before enabling the timer
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start the timer
+  ansible.builtin.systemd_service:
+    name: "{{ vuln_scanner_service_name }}.timer"
+    enabled: true
+    state: started
+    daemon_reload: true
+...

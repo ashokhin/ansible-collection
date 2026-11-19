@@ -1,0 +1,58 @@
+---
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: vuln_scanner
+  register: _vuln_scanner_tempdir
+  check_mode: false
+  changed_when: false
+
+- name: "Create release folder for v{{ vuln_scanner_trivy_version }}"
+  ansible.builtin.file:
+    path: "{{ vuln_scanner_release_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ vuln_scanner_directories_permissions }}"
+  notify:
+    - "update vuln_scanner symlink"
+
+- name: "Download Trivy v{{ vuln_scanner_trivy_version }}"
+  ansible.builtin.get_url:
+    url: "{{ vuln_scanner_download_url }}"
+    dest: "{{ _vuln_scanner_tempdir.path }}/{{ vuln_scanner_archive_name }}"
+    checksum: "{{ vuln_scanner_trivy_archive_checksum }}"
+    mode: "0644"
+  check_mode: false
+  changed_when: false
+
+- name: "Unarchive Trivy into '{{ vuln_scanner_release_path }}'"
+  ansible.builtin.unarchive:
+    src: "{{ _vuln_scanner_tempdir.path }}/{{ vuln_scanner_archive_name }}"
+    dest: "{{ vuln_scanner_release_path }}"
+    owner: root
+    group: root
+    remote_src: true
+  notify:
+    - "update vuln_scanner symlink"
+
+- name: Get list of release directories
+  ansible.builtin.find:
+    paths:
+      - "{{ vuln_scanner_releases_path }}"
+    file_type: "directory"
+    depth: 1
+  register: _vuln_scanner_find_releases
+
+- name: Sort release directories
+  ansible.builtin.set_fact:
+    _vuln_scanner_release_paths: >-
+      {{ _vuln_scanner_find_releases.files | sort(attribute='path') | map(attribute='path')
+      | community.general.version_sort }}
+
+- name: "Delete old release directories, keep last releases: {{ vuln_scanner_keep_last_versions_number }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _vuln_scanner_release_paths[:-vuln_scanner_keep_last_versions_number] }}"
+...

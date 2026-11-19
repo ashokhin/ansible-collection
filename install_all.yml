@@ -24,6 +24,11 @@
   roles:
     - role: node_exporter
 
+- name: Vulnerability scanner role
+  hosts: vuln_scanner_hosts
+  roles:
+    - role: vuln_scanner
+
 - name: Grafana role
   hosts: grafana_hosts
   roles:

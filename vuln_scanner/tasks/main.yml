@@ -1,0 +1,20 @@
+---
+# tasks file for vuln_scanner
+- name: Prepare OS
+  ansible.builtin.import_tasks: 01_preflight.yml
+
+- name: Install Trivy
+  ansible.builtin.import_tasks: 02_install.yml
+
+- name: Configuration vulnerability scanner
+  ansible.builtin.import_tasks: 03_config.yml
+
+- name: Delete temporary directory
+  ansible.builtin.file:
+    path: "{{ _vuln_scanner_tempdir.path }}"
+    state: absent
+  failed_when: false
+  changed_when: false
+  tags:
+    - always
+...

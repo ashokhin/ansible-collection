@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+{{ ansible_managed | comment }}
+
+set -uo pipefail
+
+TRIVY="{{ vuln_scanner_releases_path }}/current/trivy"
+OUT="{{ vuln_scanner_metrics_file }}"
+TMP="$(mktemp "${OUT}.XXXXXX")"
+trap 'rm -f "$TMP"' EXIT
+
+SEVERITIES="{{ vuln_scanner_severities }}"
+TRIVY_ARGS=(--quiet --format json --severity "$SEVERITIES" --cache-dir "{{ vuln_scanner_cache_path }}" --scanners vuln)
+{% if vuln_scanner_ignore_unfixed %}
+TRIVY_ARGS+=(--ignore-unfixed)
+{% endif %}
+
+log() { echo "vuln_scanner: $*"; }
+
+declare -A SEEN_TYPES=()
+
+emit_findings() {
+  local type="$1" target="$2" json="$3" sev count
+  for sev in ${SEVERITIES//,/ }; do
+    count="$(jq --arg s "$sev" '[.Results[]?.Vulnerabilities[]? | select(.Severity == $s)] | length' <<<"$json")"
+    echo "vuln_scan_findings{type=\"$type\",target=\"$target\",severity=\"$sev\"} ${count:-0}" >>"$TMP"
+  done
+  jq -r --arg t "$target" '.Results[]? | .Target as $f | .Vulnerabilities[]?
+    | "vuln_scanner: \($t) \(.Severity) \(.VulnerabilityID) \(.PkgName) \(.InstalledVersion) -> \(.FixedVersion // "n/a") (\($f))"' <<<"$json"
+}
+
+scan() {
+  local type="$1" target="$2" json
+  shift 2
+  if json="$("$TRIVY" "$@" 2>/dev/null)" && jq -e . >/dev/null 2>&1 <<<"$json"; then
+    emit_findings "$type" "$target" "$json"
+    echo "vuln_scan_target_ok{type=\"$type\",target=\"$target\"} 1" >>"$TMP"
+  else
+    log "scan failed: $type $target"
+    echo "vuln_scan_target_ok{type=\"$type\",target=\"$target\"} 0" >>"$TMP"
+  fi
+}
+
+cat >>"$TMP" <<'HEADER'
+# HELP vuln_scan_findings Vulnerabilities with the configured severity found in the target.
+# TYPE vuln_scan_findings gauge
+# HELP vuln_scan_target_ok 1 if the target was scanned successfully.
+# TYPE vuln_scan_target_ok gauge
+HEADER
+
+{% if vuln_scanner_scan_docker_images %}
+if command -v docker >/dev/null 2>&1; then
+  while read -r image; do
+    [ -n "$image" ] || continue
+    scan image "$image" image "${TRIVY_ARGS[@]}" "$image"
+  done < <(docker ps --format '{% raw %}{{.Image}}{% endraw %}' | sort -u)
+fi
+{% endif %}
+
+{% for path in vuln_scanner_fs_paths %}
+scan fs "{{ path }}" fs "${TRIVY_ARGS[@]}" "{{ path }}"
+{% endfor %}
+
+{% if vuln_scanner_apt_update %}
+apt-get update -qq >/dev/null 2>&1 || log "apt-get update failed"
+{% endif %}
+apt_sim="$(apt list --upgradable 2>/dev/null | grep -- '-security')"
+apt_security="$(grep -c . <<<"$apt_sim")"
+apt_kernel="$(grep -c '^linux-image-' <<<"$apt_sim")"
+reboot_required=0
+[ -f /var/run/reboot-required ] && reboot_required=1
+[ -n "$apt_sim" ] && sed 's/^/vuln_scanner: apt security update: /' <<<"$apt_sim"
+
+cat >>"$TMP" <<METRICS
+# HELP vuln_scan_apt_security_updates Pending apt upgrades from a security pocket.
+# TYPE vuln_scan_apt_security_updates gauge
+vuln_scan_apt_security_updates ${apt_security:-0}
+# HELP vuln_scan_apt_kernel_updates Pending kernel image upgrades from a security pocket.
+# TYPE vuln_scan_apt_kernel_updates gauge
+vuln_scan_apt_kernel_updates ${apt_kernel:-0}
+# HELP vuln_scan_reboot_required 1 if the OS asks for a reboot.
+# TYPE vuln_scan_reboot_required gauge
+vuln_scan_reboot_required ${reboot_required}
+# HELP vuln_scan_last_success_timestamp_seconds Unix time of the last finished scan.
+# TYPE vuln_scan_last_success_timestamp_seconds gauge
+vuln_scan_last_success_timestamp_seconds $(date +%s)
+METRICS
+
+chmod 0644 "$TMP"
+mv "$TMP" "$OUT"
+trap - EXIT

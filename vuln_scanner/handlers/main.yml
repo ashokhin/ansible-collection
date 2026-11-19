@@ -1,0 +1,16 @@
+---
+# handlers file for vuln_scanner
+- name: Update symlink
+  ansible.builtin.file:
+    src: "{{ vuln_scanner_release_path }}"
+    path: "{{ vuln_scanner_releases_path }}/current"
+    state: link
+  listen:
+    - "update vuln_scanner symlink"
+
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  listen:
+    - "reload vuln_scanner systemd"
+...

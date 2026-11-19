@@ -34,6 +34,7 @@
 
 - name: "Waiting for start Prometheus on {{ prometheus_web_listen_address }}"
   ansible.builtin.wait_for:
+    host: "{{ prometheus_web_listen_address.split(':')[0] }}"
     port: "{{ prometheus_web_listen_port }}"
     timeout: 60
   listen:

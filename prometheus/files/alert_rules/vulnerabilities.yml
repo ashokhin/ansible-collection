@@ -1,0 +1,59 @@
+#
+# Please do not change this file directly since it is managed by Ansible and will be overwritten.
+#
+groups:
+  - name: Vulnerabilities
+    rules:
+      - alert: VulnerableImageFixAvailable
+        expr: 'sum by (instance, target, severity) (vuln_scan_findings) > 0'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 {{ $labels.severity }} vulnerabilities with a fix: {{ $labels.target }}'
+          description: '{{ $value }} {{ $labels.severity }} finding(s) with an available fix in {{ $labels.target }} on {{ $labels.instance }}. Details: journalctl -u vuln-scanner'
+
+      - alert: AptSecurityUpdatesPending
+        expr: 'vuln_scan_apt_security_updates > 0'
+        for: 1d
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 {{ $value }} security update(s) pending on {{ $labels.instance }}'
+          description: 'apt has security updates waiting for more than a day. Run apt upgrade.'
+
+      - alert: KernelSecurityUpdatePending
+        expr: 'vuln_scan_apt_kernel_updates > 0'
+        for: 1d
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 Kernel security update pending on {{ $labels.instance }}'
+          description: 'A newer kernel is available from a security pocket.'
+
+      - alert: RebootRequired
+        expr: 'vuln_scan_reboot_required == 1'
+        for: 3d
+        labels:
+          severity: info
+        annotations:
+          title: '🔁 Reboot required on {{ $labels.instance }}'
+          description: 'Security updates were installed but the host has not been rebooted for 3 days.'
+
+      - alert: VulnerabilityScanStale
+        expr: 'time() - vuln_scan_last_success_timestamp_seconds > 2 * 86400'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 Vulnerability scan is stale on {{ $labels.instance }}'
+          description: 'The scan has not finished for more than 2 days.'
+
+      - alert: VulnerabilityScanTargetFailed
+        expr: 'vuln_scan_target_ok == 0'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 Vulnerability scan failed: {{ $labels.target }}'
+          description: 'Trivy could not scan {{ $labels.target }} on {{ $labels.instance }}.'

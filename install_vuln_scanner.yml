@@ -1,0 +1,6 @@
+---
+- name: Vulnerability scanner role
+  hosts: vuln_scanner_hosts
+  roles:
+    - role: vuln_scanner
+...

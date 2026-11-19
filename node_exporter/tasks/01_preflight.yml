@@ -25,6 +25,14 @@
     - "{{ node_exporter_base_path }}"
     - "{{ node_exporter_releases_path }}"
 
+- name: Create textfile collector folder
+  ansible.builtin.file:
+    path: "{{ node_exporter_textfile_path }}"
+    state: directory
+    owner: root
+    group: "{{ node_exporter_group }}"
+    mode: "0750"
+
 - name: Check current release symlink
   ansible.builtin.stat:
     path: "{{ node_exporter_releases_path }}/current"

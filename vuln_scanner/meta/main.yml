@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Andrei Shokhin
+  description: Install Trivy and a daily vulnerability scan exported as Prometheus metrics
+  company: Private
+  license: MIT
+  min_ansible_version: "2.1"
+  galaxy_tags: []
+dependencies: []

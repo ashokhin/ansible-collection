@@ -1,0 +1,29 @@
+---
+# defaults file for vuln_scanner
+vuln_scanner_trivy_download_base_url: "https://github.com/aquasecurity/trivy/releases/download"
+vuln_scanner_trivy_version: "0.76.2"
+vuln_scanner_trivy_archive_checksum: "sha256:bc0fc726e017b8927a62b2d3531d7a84ee01769daf5c99ed866dced54089fdbf"
+vuln_scanner_keep_last_versions_number: 3
+vuln_scanner_base_path: "/opt/vuln_scanner"
+vuln_scanner_releases_path: "{{ vuln_scanner_base_path }}/releases"
+vuln_scanner_bin_path: "{{ vuln_scanner_base_path }}/bin"
+vuln_scanner_cache_path: "{{ vuln_scanner_base_path }}/cache"
+vuln_scanner_directories_permissions: "0755"
+# Directory read by node_exporter (--collector.textfile.directory), must match the node_exporter role.
+vuln_scanner_textfile_path: "/var/lib/node_exporter/textfile"
+vuln_scanner_textfile_group: "prom-exporter"
+vuln_scanner_metrics_file: "{{ vuln_scanner_textfile_path }}/vuln_scanner.prom"
+vuln_scanner_service_name: "vuln-scanner"
+# systemd OnCalendar expression
+vuln_scanner_schedule: "*-*-* 03:30:00"
+vuln_scanner_randomized_delay: "15m"
+vuln_scanner_severities: "HIGH,CRITICAL"
+# Report only vulnerabilities that already have a fixed version available.
+vuln_scanner_ignore_unfixed: true
+# Scan images of all running Docker containers.
+vuln_scanner_scan_docker_images: true
+# Extra filesystem paths (project dependencies, Go binaries) scanned with `trivy fs`.
+vuln_scanner_fs_paths: []
+# Refresh apt indexes before counting pending security updates.
+vuln_scanner_apt_update: true
+...

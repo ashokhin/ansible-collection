@@ -4,6 +4,7 @@
 Description=Prometheus Server
 Documentation=https://prometheus.io/docs/introduction/overview/
 After=network-online.target
+After=docker.service
 
 [Service]
 User={{ prometheus_user }}

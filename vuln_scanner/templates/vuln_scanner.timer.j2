@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Daily vulnerability scan
+
+[Timer]
+OnCalendar={{ vuln_scanner_schedule }}
+RandomizedDelaySec={{ vuln_scanner_randomized_delay }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

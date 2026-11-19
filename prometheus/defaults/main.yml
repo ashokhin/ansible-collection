@@ -1,9 +1,9 @@
 ---
 # defaults file for prometheus
 prometheus_download_base_url: "https://github.com/prometheus/prometheus/releases/download"
-# the latest known LTS version is 3.13.1
-prometheus_version: "3.13.1"
-prometheus_archive_checksum: "sha256:962b812371aff838d152b6ff2d56fdb7a6396f5542f48ebf73421b9721f0d103"
+# the latest known LTS version is 3.13.2
+prometheus_version: "3.13.2"
+prometheus_archive_checksum: "sha256:0e8c4d46101bd025ea8265e377d2caabc57f488fc1be1c367f37db69ea41be6f"
 prometheus_keep_last_versions_number: 3
 prometheus_service_name: "prometheus"
 prometheus_user: "prometheus"
