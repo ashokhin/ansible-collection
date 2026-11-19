@@ -6,7 +6,7 @@ set -uo pipefail
 TRIVY="{{ vuln_scanner_releases_path }}/current/trivy"
 OUT="{{ vuln_scanner_metrics_file }}"
 TMP="$(mktemp "${OUT}.XXXXXX")"
-trap 'rm -f "$TMP"' EXIT
+trap 'rm -f "$TMP" "$TMP.err"' EXIT
 
 SEVERITIES="{{ vuln_scanner_severities }}"
 TRIVY_ARGS=(--quiet --format json --severity "$SEVERITIES" --cache-dir "{{ vuln_scanner_cache_path }}" --scanners vuln)
@@ -60,12 +60,46 @@ fi
 scan fs "{{ path }}" fs "${TRIVY_ARGS[@]}" "{{ path }}"
 {% endfor %}
 
+{% if (vuln_scanner_govulncheck_module_paths + vuln_scanner_govulncheck_binary_paths) | length > 0 %}
+GOVULNCHECK="{{ vuln_scanner_bin_path }}/govulncheck-{{ vuln_scanner_govulncheck_version }}"
+export GOPATH="{{ vuln_scanner_cache_path }}/go" GOCACHE="{{ vuln_scanner_cache_path }}/go-build" GOFLAGS="-modcacherw" GOTOOLCHAIN=local
+export PATH="$PATH:$(dirname "{{ vuln_scanner_go_bin }}")"
+
+echo '# HELP vuln_scan_govulncheck_findings Reachable vulnerabilities with a fixed version found by govulncheck.' >>"$TMP"
+echo '# TYPE vuln_scan_govulncheck_findings gauge' >>"$TMP"
+
+govulncheck_scan() {
+  local kind="$1" target="$2" json count
+  shift 2
+  if json="$("$@" 2>"$TMP.err")" && jq -es . >/dev/null 2>&1 <<<"$json"; then
+    count="$(jq -s '[.[] | select(.finding) | .finding | select(.trace[0].function != null and (.fixed_version // "") != "") | .osv] | unique | length' <<<"$json")"
+    jq -rs --arg t "$target" '[.[] | select(.finding) | .finding | select(.trace[0].function != null and (.fixed_version // "") != "")]
+      | unique_by(.osv)[] | "vuln_scanner: govulncheck \($t) \(.osv) \(.trace[0].module) \(.trace[0].version) -> \(.fixed_version)"' <<<"$json"
+    echo "vuln_scan_govulncheck_findings{kind=\"$kind\",target=\"$target\"} ${count:-0}" >>"$TMP"
+    echo "vuln_scan_target_ok{type=\"govulncheck-$kind\",target=\"$target\"} 1" >>"$TMP"
+  else
+    log "govulncheck failed: $kind $target: $(head -c 300 "$TMP.err" | tr '\n' ' ')"
+    echo "vuln_scan_target_ok{type=\"govulncheck-$kind\",target=\"$target\"} 0" >>"$TMP"
+  fi
+}
+
+{% for path in vuln_scanner_govulncheck_module_paths %}
+govulncheck_scan module "{{ path }}" bash -c 'cd "$1" && "$2" -format json ./...' _ "{{ path }}" "$GOVULNCHECK"
+{% endfor %}
+{% for path in vuln_scanner_govulncheck_binary_paths %}
+govulncheck_scan binary "{{ path }}" "$GOVULNCHECK" -mode=binary -format json "{{ path }}"
+{% endfor %}
+
+{% endif %}
 {% if vuln_scanner_apt_update %}
 apt-get update -qq >/dev/null 2>&1 || log "apt-get update failed"
 {% endif %}
 apt_sim="$(apt list --upgradable 2>/dev/null | grep -- '-security')"
 apt_security="$(grep -c . <<<"$apt_sim")"
 apt_kernel="$(grep -c '^linux-image-' <<<"$apt_sim")"
+apt_thirdparty_sim="$(apt-get -s dist-upgrade 2>/dev/null | grep '^Inst' | grep -v 'Ubuntu:')"
+apt_thirdparty="$(grep -c . <<<"$apt_thirdparty_sim")"
+[ -n "$apt_thirdparty_sim" ] && sed 's/^/vuln_scanner: apt third-party update: /' <<<"$apt_thirdparty_sim" | cut -c1-200
 reboot_required=0
 [ -f /var/run/reboot-required ] && reboot_required=1
 [ -n "$apt_sim" ] && sed 's/^/vuln_scanner: apt security update: /' <<<"$apt_sim"
@@ -77,6 +111,9 @@ vuln_scan_apt_security_updates ${apt_security:-0}
 # HELP vuln_scan_apt_kernel_updates Pending kernel image upgrades from a security pocket.
 # TYPE vuln_scan_apt_kernel_updates gauge
 vuln_scan_apt_kernel_updates ${apt_kernel:-0}
+# HELP vuln_scan_apt_thirdparty_updates Pending apt upgrades from repositories other than the Ubuntu archive.
+# TYPE vuln_scan_apt_thirdparty_updates gauge
+vuln_scan_apt_thirdparty_updates ${apt_thirdparty:-0}
 # HELP vuln_scan_reboot_required 1 if the OS asks for a reboot.
 # TYPE vuln_scan_reboot_required gauge
 vuln_scan_reboot_required ${reboot_required}

@@ -9,7 +9,7 @@
     name: "{{ _docker_dependencies }}"
     state: present
     update_cache: true
-  when: "(_docker_dependencies | default())"
+  when: "(_docker_dependencies | default() | length) > 0"
 
 - name: Prepare apt
   when:

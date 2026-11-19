@@ -1,9 +1,9 @@
 ---
 # defaults file for alloy
 alloy_download_base_url: "https://github.com/grafana/alloy/releases/download"
-alloy_version: "1.17.0"
-# checksum can be found at: https://github.com/grafana/alloy/releases/download/v1.17.0/SHA256SUMS
-alloy_archive_checksum: "sha256:a905f3c750855323e12b23630150972956e24c993f0c9170ca2f0af4bd442d8e"
+alloy_version: "1.22.0"
+# checksum can be found at: https://github.com/grafana/alloy/releases/download/v1.22.0/SHA256SUMS
+alloy_archive_checksum: "sha256:62d177feb18c9b6ffd636c8273aa82a6afc75a507d096ff951749df23c3176f9"
 alloy_keep_last_versions_number: 3
 alloy_service_name: "alloy"
 alloy_user: "alloy"

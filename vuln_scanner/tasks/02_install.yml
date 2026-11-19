@@ -36,6 +36,25 @@
   notify:
     - "update vuln_scanner symlink"
 
+- name: Install govulncheck
+  ansible.builtin.command:
+    cmd: "{{ vuln_scanner_go_bin }} install golang.org/x/vuln/cmd/govulncheck@{{ vuln_scanner_govulncheck_version }}"
+    creates: "{{ vuln_scanner_bin_path }}/govulncheck-{{ vuln_scanner_govulncheck_version }}"
+  environment:
+    GOBIN: "{{ vuln_scanner_bin_path }}"
+    GOPATH: "{{ vuln_scanner_cache_path }}/go"
+    GOFLAGS: "-modcacherw"
+  when: (vuln_scanner_govulncheck_module_paths + vuln_scanner_govulncheck_binary_paths) | length > 0
+  register: _vuln_scanner_govulncheck_install
+
+- name: Pin the installed govulncheck to its version
+  ansible.builtin.copy:
+    src: "{{ vuln_scanner_bin_path }}/govulncheck"
+    dest: "{{ vuln_scanner_bin_path }}/govulncheck-{{ vuln_scanner_govulncheck_version }}"
+    remote_src: true
+    mode: "0755"
+  when: _vuln_scanner_govulncheck_install is changed
+
 - name: Get list of release directories
   ansible.builtin.find:
     paths:

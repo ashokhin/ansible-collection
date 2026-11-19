@@ -23,6 +23,15 @@ groups:
           title: '🛡 {{ $labels.vuln_severity }} vulnerabilities with a fix: {{ $labels.target }}'
           description: '{{ $value }} {{ $labels.vuln_severity }} finding(s) with an available fix in {{ $labels.target }} on {{ $labels.instance }}. Details: journalctl -u vuln-scanner'
 
+      - alert: GovulncheckReachableVulnerability
+        expr: 'vuln_scan_govulncheck_findings > 0'
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          title: '🛡 Reachable vulnerabilities with a fix: {{ $labels.target }}'
+          description: '{{ $value }} vulnerabilities reachable from the code of {{ $labels.target }} on {{ $labels.instance }} have a fixed version. Details: journalctl -u vuln-scanner'
+
       - alert: AptSecurityUpdatesPending
         expr: 'vuln_scan_apt_security_updates > 0'
         for: 1d
@@ -40,6 +49,15 @@ groups:
         annotations:
           title: '🛡 Kernel security update pending on {{ $labels.instance }}'
           description: 'A newer kernel is available from a security pocket.'
+
+      - alert: AptThirdPartyUpdatesPending
+        expr: 'vuln_scan_apt_thirdparty_updates > 0'
+        for: 7d
+        labels:
+          severity: info
+        annotations:
+          title: '📦 {{ $value }} third-party package update(s) pending on {{ $labels.instance }}'
+          description: 'Packages from non-Ubuntu repositories (Grafana, Docker, etc.) have updates waiting for more than a week. They have no security pocket, so check the changelog.'
 
       - alert: RebootRequired
         expr: 'vuln_scan_reboot_required == 1'

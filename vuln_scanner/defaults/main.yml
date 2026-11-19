@@ -24,6 +24,14 @@ vuln_scanner_ignore_unfixed: true
 vuln_scanner_scan_docker_images: true
 # Extra filesystem paths (project dependencies, Go binaries) scanned with `trivy fs`.
 vuln_scanner_fs_paths: []
+# Go module directories checked with `govulncheck` (reachability-aware, source mode).
+vuln_scanner_govulncheck_module_paths: []
+# Built Go binaries checked with `govulncheck -mode=binary`.
+vuln_scanner_govulncheck_binary_paths: []
+vuln_scanner_govulncheck_version: "v1.10.0"
+# Go toolchain used to install govulncheck and to load the modules; must exist on the host
+# when any govulncheck target is configured.
+vuln_scanner_go_bin: "/usr/local/go/bin/go"
 # Refresh apt indexes before counting pending security updates.
 vuln_scanner_apt_update: true
 ...

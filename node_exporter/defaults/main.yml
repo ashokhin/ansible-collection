@@ -1,8 +1,8 @@
 ---
 # defaults file for node_exporter
 node_exporter_download_base_url: "https://github.com/prometheus/node_exporter/releases/download"
-node_exporter_version: "1.11.1"
-node_exporter_archive_checksum: "sha256:9f5ea48e5bc7b656f8a91a32e7d7deb89f70f73dabd0d974418aca15f37d6810"
+node_exporter_version: "1.13.0"
+node_exporter_archive_checksum: "sha256:f6a6c72ee04fd6537efede3900ea45385eeade513c99de60d607d4b1611f8e6e"
 node_exporter_keep_last_versions_number: 3
 node_exporter_service_name: "node-exporter"
 node_exporter_user: "prom-exporter"

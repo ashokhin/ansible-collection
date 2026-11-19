@@ -1,9 +1,9 @@
 ---
 # defaults file for loki
 loki_download_base_url: "https://github.com/grafana/loki/releases/download"
-loki_version: "3.6.11"
-# checksum can be found at: https://github.com/grafana/loki/releases/download/v3.6.11/SHA256SUMS
-loki_archive_checksum: "sha256:e87959e3d7f32ae3e6a74704d71f5721d51c7558ff42614a7a0c85b5da2a9c9d"
+loki_version: "3.7.10"
+# checksum can be found at: https://github.com/grafana/loki/releases/download/v3.7.10/SHA256SUMS
+loki_archive_checksum: "sha256:200e74f7e631969bd0f2a066a2e1d33cdea9b3c0801aaaa7d78947c4ac29bddb"
 loki_keep_last_versions_number: 3
 loki_service_name: "loki"
 loki_user: "loki"

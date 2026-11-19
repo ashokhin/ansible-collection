@@ -9,7 +9,7 @@
     name: "{{ _grafana_dependencies }}"
     state: present
     update_cache: true
-  when: "(_grafana_dependencies | default())"
+  when: "(_grafana_dependencies | default() | length) > 0"
 
 - name: Prepare apt
   when:
