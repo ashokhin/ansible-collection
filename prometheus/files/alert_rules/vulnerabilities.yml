@@ -4,9 +4,18 @@
 groups:
   - name: Vulnerabilities
     rules:
+      # The scan label "severity" would be overwritten by the alert label, so it is copied to "vuln_severity".
+      - alert: VulnerableImageCriticalFixAvailable
+        expr: 'sum by (instance, target, vuln_severity) (label_replace(vuln_scan_findings{severity="CRITICAL"}, "vuln_severity", "$1", "severity", "(.*)")) > 0'
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          title: '🛡 {{ $labels.vuln_severity }} vulnerabilities with a fix: {{ $labels.target }}'
+          description: '{{ $value }} {{ $labels.vuln_severity }} finding(s) with an available fix in {{ $labels.target }} on {{ $labels.instance }}. Details: journalctl -u vuln-scanner'
+
       - alert: VulnerableImageFixAvailable
-        # The scan label "severity" would be overwritten by the alert label, so it is copied to "vuln_severity".
-        expr: 'sum by (instance, target, vuln_severity) (label_replace(vuln_scan_findings, "vuln_severity", "$1", "severity", "(.*)")) > 0'
+        expr: 'sum by (instance, target, vuln_severity) (label_replace(vuln_scan_findings{severity="HIGH"}, "vuln_severity", "$1", "severity", "(.*)")) > 0'
         for: 0m
         labels:
           severity: warning
