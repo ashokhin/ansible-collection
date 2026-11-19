@@ -5,13 +5,14 @@ groups:
   - name: Vulnerabilities
     rules:
       - alert: VulnerableImageFixAvailable
-        expr: 'sum by (instance, target, severity) (vuln_scan_findings) > 0'
+        # The scan label "severity" would be overwritten by the alert label, so it is copied to "vuln_severity".
+        expr: 'sum by (instance, target, vuln_severity) (label_replace(vuln_scan_findings, "vuln_severity", "$1", "severity", "(.*)")) > 0'
         for: 0m
         labels:
           severity: warning
         annotations:
-          title: '🛡 {{ $labels.severity }} vulnerabilities with a fix: {{ $labels.target }}'
-          description: '{{ $value }} {{ $labels.severity }} finding(s) with an available fix in {{ $labels.target }} on {{ $labels.instance }}. Details: journalctl -u vuln-scanner'
+          title: '🛡 {{ $labels.vuln_severity }} vulnerabilities with a fix: {{ $labels.target }}'
+          description: '{{ $value }} {{ $labels.vuln_severity }} finding(s) with an available fix in {{ $labels.target }} on {{ $labels.instance }}. Details: journalctl -u vuln-scanner'
 
       - alert: AptSecurityUpdatesPending
         expr: 'vuln_scan_apt_security_updates > 0'
