@@ -13,6 +13,9 @@ TRIVY_ARGS=(--quiet --format json --severity "$SEVERITIES" --cache-dir "{{ vuln_
 {% if vuln_scanner_ignore_unfixed %}
 TRIVY_ARGS+=(--ignore-unfixed)
 {% endif %}
+{% for file in vuln_scanner_skip_files %}
+TRIVY_ARGS+=(--skip-files "{{ file }}")
+{% endfor %}
 
 log() { echo "vuln_scanner: $*"; }
 

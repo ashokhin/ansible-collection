@@ -20,6 +20,9 @@ vuln_scanner_randomized_delay: "15m"
 vuln_scanner_severities: "HIGH,CRITICAL"
 # Report only vulnerabilities that already have a fixed version available.
 vuln_scanner_ignore_unfixed: true
+# Files skipped by every Trivy scan, for findings that were checked and are not reachable
+# (for example a Go helper binary inside an official image that the vendor has not rebuilt yet).
+vuln_scanner_skip_files: []
 # Scan images of all running Docker containers.
 vuln_scanner_scan_docker_images: true
 # Extra filesystem paths (project dependencies, Go binaries) scanned with `trivy fs`.

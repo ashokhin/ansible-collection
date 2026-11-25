@@ -24,6 +24,7 @@ loki_config:
   auth_enabled: false
   server:
     http_listen_port: 3100
+    grpc_listen_address: "127.0.0.1"
     grpc_listen_port: 9096
   common:
     instance_addr: 127.0.0.1
